@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_152">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Instalaciones/apache-tomcat-8.5.23/apache-tomcat-7.0.82/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="C:/Instalaciones/apache-tomcat-8.5.23/apache-tomcat-7.0.82/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="C:/Instalaciones/drivers jrs/Microsoft JDBC Driver 6.0 for SQL Server/sqljdbc_6.0/esn/jre8/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="E:/uploadbean1.9/WEB-INF/lib/cos.jar"/>
+	<classpathentry kind="lib" path="E:/uploadbean1.9/WEB-INF/lib/fileupload.jar"/>
+	<classpathentry kind="lib" path="E:/uploadbean1.9/WEB-INF/lib/struts.jar"/>
+	<classpathentry kind="lib" path="E:/uploadbean1.9/WEB-INF/lib/uploadbean.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
