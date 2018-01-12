@@ -1,0 +1,13 @@
+
+<div id="header">
+  <div id="header-things">
+    <img id="logo-patronato-unam" src="img/patronato.png">
+    <div id="title">
+      <h1 class="titles">CONACYT</h1>
+    </div>
+  </div>
+</div>
+<div id="menu">
+  <a href="index.jsp">Inicio</a>  
+  <a href="catalogos.jsp">CONACYT Servicios</a>
+</div>
