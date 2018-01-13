@@ -3,25 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package conacyt.beans;
 
-import java.util.logging.Level;
 import javax.ejb.Local;
 import net.sf.json.JSONObject;
 
 /**
  *
- * @author gigi
+ * @author eordazga
  */
 @Local
-public interface ConacytRegistroBeanLocal {
-    /**
-     * Obtiene el nivel que se le dará a los mensajes.
-     * @param level ya sea INFO,FINER, FINEST,SEVERE.
-     */
-    void setLoggerLevel(Level level);
-
+public interface LoginConacytBeanLocal {
     /**
      * Proceso mediante el cuál se invocan servicios para el registro, edición
      * y actualización de proyectos CONACYT, dependiendo del método que sea invocado.

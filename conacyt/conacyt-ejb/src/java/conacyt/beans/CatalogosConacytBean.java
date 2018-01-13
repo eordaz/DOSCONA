@@ -1,10 +1,10 @@
 /*
  * Patronato Universitario
  * Universidad Nacional Autónoma de México
- *
- * @author Edith Corina Ordaz Garnica <edith.ordaz@gmail.com>
- * @correo institucional: 
- * @correo personal: edith.ordaz@gmail.com
+ * 
+ * @Date 12 de Enero del 2018
+ * @DateModified    
+ * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com> 
  */
 
 package conacyt.beans;
@@ -20,10 +20,10 @@ import net.sf.json.JSONObject;
  * @author gigi
  */
 @Stateless
-public class ConacytRegistroBean implements ConacytRegistroBeanLocal {
+public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
 
-    private static final String className = "ConacytRegistroBean";
-    private static final Logger LOGGER = Logger.getLogger("ConacytRegistroBean");
+    private static final String className = "CatalogosConacytBean";
+    private static final Logger LOGGER = Logger.getLogger("CatalogosConacytBean");
     private static final ResourceBundle conacyt_cfg = ResourceBundle.getBundle("conacyt_cfg");
     
     @Override
@@ -34,7 +34,7 @@ public class ConacytRegistroBean implements ConacytRegistroBeanLocal {
     /**
      * Constructor de la clase GenericExportCSV.
      */
-    public ConacytRegistroBean() {
+    public CatalogosConacytBean() {
         try {
             LOGGER.setLevel(Level.FINEST);
                        

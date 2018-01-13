@@ -9,7 +9,6 @@
 
 package resource;
 
-import conacyt.beans.ConacytRegistroBeanLocal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
@@ -25,6 +24,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.sf.json.JSONObject;
+import conacyt.beans.CatalogosConacytBeanLocal;
 
 /**
  * REST Web Service
@@ -32,11 +32,12 @@ import net.sf.json.JSONObject;
  * @author gigi
  */
 @Path("conacyt/{method:.*}")
-public class ConacytResources {
+public class CatalogosConacytResources {
+
 
     @Context
     private UriInfo context;
-    ConacytRegistroBeanLocal conacytRegistroBean = lookupConacytRegistroBeanLocal();
+    CatalogosConacytBeanLocal catalogosConacytBean = lookupCatalogosConacytBeanLocal();   
     private static String className = "ConacytResources";
     private static final Logger LOGGER = Logger.getLogger("ConacytResources");
 
@@ -95,7 +96,7 @@ public class ConacytResources {
 
                 //JSONRecord params = new JSONRecord(json);                
                 JSONObject params = JSONObject.fromObject(json);
-                result = conacytRegistroBean.processMethod(method, params);
+                result = catalogosConacytBean.processMethod(method, params);
 
                 //responseResult = csvcreator.getMultiCollCSVfromCDB(params); //oldie
 //                responseResult = csvcreator.exportMultiColl(params);  //Nuevo método para control desde session Manager
@@ -136,14 +137,16 @@ public class ConacytResources {
         return result;
     }
 
-    private ConacytRegistroBeanLocal lookupConacytRegistroBeanLocal() {
+    private CatalogosConacytBeanLocal lookupCatalogosConacytBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (ConacytRegistroBeanLocal) c.lookup("java:global/conacyt/conacyt-ejb/ConacytRegistroBean!conacyt.beans.ConacytRegistroBeanLocal");
+            return (CatalogosConacytBeanLocal) c.lookup("java:global/conacyt/conacyt-ejb/CatalogosConacytBean!conacyt.beans.CatalogosConacytBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
         }
-    }        
+    }
+
+         
 }
     

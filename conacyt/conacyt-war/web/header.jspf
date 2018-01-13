@@ -9,5 +9,6 @@
 </div>
 <div id="menu">
   <a href="index.jsp">Inicio</a>  
-  <a href="catalogos.jsp">CONACYT Servicios</a>
+  <a href="login.jsp">Login CONACYT</a>
+  <a href="catalogos.jsp">Catalogos CONACYT</a>
 </div>
