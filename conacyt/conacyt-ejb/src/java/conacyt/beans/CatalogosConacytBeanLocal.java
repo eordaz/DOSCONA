@@ -1,18 +1,22 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Patronato Universitario
+ * Universidad Nacional Autónoma de México
+ * 
+ * @Date 12 de Enero del 2018   
  */
 
 package conacyt.beans;
 
 import java.util.logging.Level;
 import javax.ejb.Local;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- *
- * @author gigi
+ * Interface local para la publicación de los servicios encargados de las 
+ * operaciones de los catálogos.
+ * 
+ * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com> 
  */
 @Local
 public interface CatalogosConacytBeanLocal {
@@ -29,8 +33,8 @@ public interface CatalogosConacytBeanLocal {
      * @param method Nombre del servicio que será invocado.
      * @param params JSON con los parámetros de entrada necesarios para el
      * servicio que fue invocado.
-     * @return Regresa un JsonObject con la respuesta dependiendo del servicio
+     * @return Regresa un JSONArray con la respuesta dependiendo del servicio
      * que haya sido invocado.
      */
-    public abstract JSONObject processMethod(String method, JSONObject params);
+    public abstract JSONArray processMethod(String method, JSONObject params);
 }

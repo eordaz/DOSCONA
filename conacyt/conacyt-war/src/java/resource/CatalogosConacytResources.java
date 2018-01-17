@@ -1,10 +1,8 @@
 /*
  * Patronato Universitario
  * Universidad Nacional Autónoma de México
- *
- * @author: Edith Corina Ordaz Garnica
- * @correo institucional: 
- * @correo personal: edith.ordaz@gmail.com
+ * 
+ * @Date 12 de Enero del 2018   
  */
 
 package resource;
@@ -25,11 +23,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.sf.json.JSONObject;
 import conacyt.beans.CatalogosConacytBeanLocal;
+import net.sf.json.JSONArray;
 
 /**
  * REST Web Service
  *
- * @author gigi
+ * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com>
  */
 @Path("conacyt/{method:.*}")
 public class CatalogosConacytResources {
@@ -63,7 +62,7 @@ public class CatalogosConacytResources {
      */
     @GET
     @Produces("application/json")
-    public JSONObject conacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
+    public JSONArray conacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
         return conacytResource(method, json);
     }
 
@@ -74,7 +73,7 @@ public class CatalogosConacytResources {
      */
     @POST
     @Produces("application/json")
-    public JSONObject conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
+    public JSONArray conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
         return conacytResource(method, json);
     }
     
@@ -86,9 +85,9 @@ public class CatalogosConacytResources {
      * @param json Cadena de parámetros
      * @return response dependienso el tipo de objeto.
      */
-    public JSONObject conacytResource(String method, String json) {
+    public JSONArray conacytResource(String method, String json) {
         String methodStr = className + "::conacytResource";
-        JSONObject result = null;
+        JSONArray result = null;
         
         try {
             if ((json != null && !json.isEmpty())

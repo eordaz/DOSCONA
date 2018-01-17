@@ -3,7 +3,7 @@
     Universidad Nacional Autónoma de México
     Document   : Página de referencia de los servicios web
     Created on : 02 de Enero, 2018
-    Author     : Edith C. Ordaz <edith.ordaz@gmail.com>
+    Author     : Edith C. Ordaz <edith.ordaz@patronato.unam.mx><edith.ordaz@gmail.com>
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -38,7 +38,7 @@
               <pre>
 json =
         {
-            "source": "cat_fondos"            
+            "tabla": "cat_fondos"            
         } 
               </pre>
             </div>
@@ -48,13 +48,17 @@ json =
             </div>
             <br>
             <div class="indent-2">
-              <strong>source</strong>:  Nombre de la tabla del catálogo a obtener (obligatorio). <br>
+              <strong>tabla</strong>:  Nombre de la tabla del catálogo a obtener (obligatorio). <br>
             </div>
           </code>
           <h3 class="titles">Respuesta típica:</h3>
           <code class="code">
             <div class="response indent-1">
-        Entrega el JSON, con el arreglo delos registros contenidos en el catálogo.
+        Entrega el JSONArray, con el arreglo de los registros contenidos en el catálogo.
+        [ 
+          {"id_cat_cat_catalogos":2,"id_cat_tabla":"Administrador","valor":"Rol asignado para Administrador"},
+          {"id_cat_cat_catalogos":3,"id_cat_tabla":"Dependencia","valor":"Rol asignada para Dependencias"} 
+        ]
             </div>
           </code>
           <h3 class="titles">Probar:</h3>

@@ -21,13 +21,13 @@
       <div id="content">
 
         <div id="service-description">
-          Conjunto de servicios encargados de darle funcionalidad al login del proyecto de CONACYT.
+          Conjunto de servicios encargados del logeo del usuario para el proyecto de CONACYT.
         </div>
 
         <div class="section">
           <h2 class="titles">getLogin</h2>
           <div class="description">
-            Servicio mediante el cual se realiza el login.
+            Servicio mediante el cual se realizá el login.
           </div>
           <h3 class="titles">Ejemplo:</h3>
           <code class="example">
@@ -59,7 +59,8 @@ json =
         Entrega el JSON, con el arreglo delos registros contenidos en el catálogo.
 json =
         {
-            "result_login": true         
+            "result_login": true,
+            "rol": 2
         } 
             </div>
           </code>

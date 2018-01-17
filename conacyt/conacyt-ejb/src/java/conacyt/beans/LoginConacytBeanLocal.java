@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Patronato Universitario
+ * Universidad Nacional Autónoma de México
+ * 
+ * @Date 13 de Enero del 2018   
  */
 package conacyt.beans;
 
@@ -9,8 +10,10 @@ import javax.ejb.Local;
 import net.sf.json.JSONObject;
 
 /**
- *
- * @author eordazga
+ * Interface local para la publicación de los servicios encargados de las 
+ * operaciones del login.
+ * 
+ * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com> 
  */
 @Local
 public interface LoginConacytBeanLocal {

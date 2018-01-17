@@ -9,15 +9,16 @@
             <name>conacyt-war</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
-                <library dirs="100">
-                    <file>${reference.conacyt-ejb.dist}</file>
-                </library>
                 <library dirs="200">
                     <file>${file.reference.asm-3.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.commons-beanutils-bean-collections.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="100">
+                    <file>${reference.conacyt-ejb.dist}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">

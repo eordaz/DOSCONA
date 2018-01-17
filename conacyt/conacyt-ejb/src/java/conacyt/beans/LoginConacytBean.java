@@ -15,9 +15,10 @@ import javax.ejb.Stateless;
 import net.sf.json.JSONObject;
 
 /**
- *
- * @author eordazga
+ * Clase de tipo Session Bean que contiene la logica de los servicios que se requieren
+ * para las operaciones del Login.
  * 
+ * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com> 
  */
 @Stateless
 public class LoginConacytBean implements LoginConacytBeanLocal {

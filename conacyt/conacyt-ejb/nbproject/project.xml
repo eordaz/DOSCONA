@@ -16,6 +16,7 @@
             <included-library dirs="200">file.reference.commons-logging-1.1.1.jar</included-library>
             <included-library dirs="200">file.reference.ezmorph-1.0.6.jar</included-library>
             <included-library dirs="200">file.reference.json-lib-2.2.3-jdk15.jar</included-library>
+            <included-library dirs="200">file.reference.DBSQLManager.jar</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

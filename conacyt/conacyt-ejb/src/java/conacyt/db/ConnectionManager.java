@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Patronato Universitario
+ * Universidad Nacional Autónoma de México
+ * 
+ * @Date 12 de Enero del 2018   
  */
 package conacyt.db;
 
@@ -17,46 +18,61 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author eordazga
+ * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com>
  */
- final class ConnectionManager {
+final class ConnectionManager {
+
     private static final String className = "ConnectionManager";
     private static final Logger LOGGER = Logger.getLogger("ConnectionManager");
     private static final ResourceBundle db_cfg = ResourceBundle.getBundle("db_cfg");
-    
-    public ConnectionManager() {
+    Context initialContext = null;
+    DataSource datasource = null;
+    Connection conn = null;
+    public String datasourceStr = null;
+
+    public ConnectionManager(String dataSource) {
         try {
             LOGGER.setLevel(Level.FINEST);
-        } catch(Exception e){
-             LOGGER.log(Level.SEVERE, className + "::> Error al crear el objeto.", e);
+            datasourceStr = dataSource;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, className + "::> Error al crear el objeto.", e);
         }
     }
-            
-    /** Uses JNDI and Datasource (preferred style).   */
-  static final Connection getJNDIConnection(String dataSourceParam){
-  
-   String DATASOURCE_CONTEXT = !(dataSourceParam.isEmpty()) ? dataSourceParam : db_cfg.getString("datasource");
-    
-    Connection result = null;
-    try {
-        Context initialContext = new InitialContext();
-      if ( initialContext == null){
-           LOGGER.log(Level.WARNING, className + "::> JNDI problem. Cannot get InitialContext.");       
-      }
-        DataSource datasource = (DataSource)initialContext.lookup(DATASOURCE_CONTEXT);
-      if (datasource != null) {
-        result = datasource.getConnection();
-      }
-      else {
-          LOGGER.log(Level.WARNING, className + "::> Failed to lookup datasource.");
-      }
+
+    /**
+     * Uses JNDI and Datasource (preferred style).
+     * @return Connection
+     */
+    public Connection getJNDIConnection() {
+        String methodStr = className + "::getJNDIConnection";
+
+        String DATASOURCE_CONTEXT = !(datasourceStr.isEmpty()) ? datasourceStr : db_cfg.getString("datasource");
+        LOGGER.log(Level.INFO, methodStr + "::> DATASOURCE_CONTEXT: "+ DATASOURCE_CONTEXT);
+        try {
+            initialContext = new InitialContext();
+            if (initialContext == null) {
+                LOGGER.log(Level.WARNING, methodStr + "::> JNDI problem. Cannot get InitialContext.");
+            }
+            datasource = (DataSource) initialContext.lookup(DATASOURCE_CONTEXT);
+            if (datasource != null) {
+                conn = datasource.getConnection();
+            } else {
+                LOGGER.log(Level.WARNING, methodStr + "::> Failed to lookup datasource.");
+            }
+        } catch (NamingException ex) {
+            LOGGER.log(Level.SEVERE, methodStr + "::> Cannot get connection." + ex);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, methodStr + "::> Cannot get connection." + ex);
+        }
+        return conn;
     }
-    catch ( NamingException ex ) {
-        LOGGER.log(Level.WARNING, className + "::> Cannot get connection." + ex);
+
+    public void closeConnection() {
+        String methodStr = className + "::closeConnection";
+        try {
+            conn.close();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + "::> Cannot close connection." + ex);
+        }
     }
-    catch(SQLException ex){
-      LOGGER.log(Level.WARNING, className + "::> Cannot get connection." + ex);
-    }         
-  return result;
-  }
 }
