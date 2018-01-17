@@ -90,7 +90,7 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
         String query_cat = null, query_cat_cat = null;
         Integer id_cat_tabla = null;
         try {
-            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("source").isEmpty()) {
+            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("tabla").isEmpty()) {
                 query_cat = "SELECT " + conacyt_cfg.getString("column_id_tabla") +
                             " FROM " + conacyt_cfg.getString("cat_tablas") + 
                             " WHERE valor = \'" + params.getString("source") + "\'";
@@ -106,12 +106,15 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
                         result.put(i,object);
                     }
                 } else {
+                    result_query = JSONArray.fromObject(new String("[{\"getCatalogo\":\"-1\",\"mensaje\":\">El catálogo que esta solicitando no se encuentra registrado en la base de datos.\"}]"));
                     LOGGER.log(Level.WARNING, methodStr + ">Error: > El catálogo que esta solicitando no se encuentra registrado en la base de datos." + params.getString("source"));
                 }
             } else {
+                result_query = JSONArray.fromObject(new String("[{\"getCatalogo\":\"-1\",\"mensaje\":\">Los parámetros que envía son nulos o vacíos.\"}]"));
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
             }
         } catch (Exception ex) {
+            result_query = JSONArray.fromObject(new String("[{\"getCatalogo\":\"-1\",\"mensaje\":\">Excepción al ejecutar el método.\"}]"));
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método. ", ex);
         }
         return result_query;
