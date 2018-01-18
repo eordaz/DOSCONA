@@ -16,11 +16,9 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONObject;
 
@@ -35,7 +33,7 @@ public class LoginConacytResource {
 
     @Context
     private UriInfo context;
-    LoginConacytBeanLocal loginConacytBean = lookupLoginConacytBeanLocal();
+    LoginConacytBeanLocal loginConacytBean = null;
     private static String className = "LoginConacytResource";
     private static final Logger LOGGER = Logger.getLogger("LoginConacytResource");
 
@@ -43,6 +41,12 @@ public class LoginConacytResource {
      * Creates a new instance of LoginConacytResource
      */
     public LoginConacytResource() {
+        try{
+            LOGGER.setLevel(Level.INFO);
+            loginConacytBean = lookupLoginConacytBeanLocal();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, className + "::LoginConacytResource>Error al instanciar el WS, bean no disponible. ", ex);
+        }
     }
 
     /**

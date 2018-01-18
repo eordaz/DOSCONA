@@ -51,6 +51,17 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
  * @return JSON de salida //{"login_result":true} 
  */
     private JSONObject getLogin(JSONObject params) { 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String methodStr = className + "::getLogin";
+        JSONObject result = null;
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("usuario").isEmpty() && !params.getString("pass").isEmpty()) {
+                
+            } else {
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método. ", ex);
+        }
+        return result;
     }
 }

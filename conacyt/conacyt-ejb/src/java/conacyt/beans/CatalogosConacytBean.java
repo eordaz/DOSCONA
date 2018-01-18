@@ -100,10 +100,7 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
                     //solicitaremos todos los registros que esten asociados con el ID que enviamos como parámetro.
                     query_cat_cat = "SELECT * FROM " + conacyt_cfg.getString("cat_catalogos") + " WHERE id_cat_tabla = \'" + id_cat_tabla + "\'";
                     result_query = recordManager.executeQueryToArray(query_cat_cat);
-                    for (int i = 0; i < result_query.size(); i++) {
-                        Object object = result_query.get(i);
-                        result.put(i, object);
-                    }
+                    
                 } else {
                     LOGGER.log(Level.WARNING, methodStr + ">Error: > El catálogo que esta solicitando no se encuentra registrado en la base de datos." + params.getString("source"));
                 }

@@ -39,7 +39,7 @@
               <pre>
 json =
         {
-            "user": "usuario_pruebas" , "pass":"1q2w3e4r"           
+            "usuario": "usuario_pruebas" , "pass":"1q2w3e4r"           
         } 
               </pre>
             </div>
@@ -49,7 +49,7 @@ json =
             </div>
             <br>
             <div class="indent-2">
-              <strong>user</strong>:  Nombre del usuario (obligatorio). <br>
+              <strong>usuario</strong>:  Nombre del usuario (obligatorio). <br>
               <strong>pass</strong>:  Password del usuario (obligatorio). <br>
             </div>
           </code>
