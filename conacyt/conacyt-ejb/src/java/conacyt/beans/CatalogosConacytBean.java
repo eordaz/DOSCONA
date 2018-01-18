@@ -58,7 +58,7 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
         try {
             if (method.equals("getCatalogo")) {
                 result = getCatalogo(params);
-            } else if (method.equals("getCatMonedas")) {
+            } else if (method.equals("insertorUpdateCatalogo")) {
                 result = insertorUpdateCatalogo(params);
                 /**TODO: por realizar
                  * else if (method.equals("EliminarCatalogo")) { result =
