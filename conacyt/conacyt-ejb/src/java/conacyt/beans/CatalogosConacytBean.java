@@ -94,10 +94,10 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
         String query_cat = null, query_cat_cat = null;
         Integer id_cat_tabla = null;
         try {
-            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("source").isEmpty()) {
+            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("tabla").isEmpty()) {
                 query_cat = "SELECT " + conacyt_cfg.getString("column_id_tabla")
                         + " FROM " + conacyt_cfg.getString("cat_tablas")
-                        + " WHERE valor = \'" + params.getString("source") + "\'";
+                        + " WHERE valor = \'" + params.getString("tabla") + "\'";
                 id_cat_tabla = recordManager.executeQueryToID(query_cat, conacyt_cfg.getString("column_id_tabla"));
                 if (id_cat_tabla != null && id_cat_tabla > 0) {
                     //LOGGER.log(Level.INFO, methodStr + ">Que hay en el id_cat_tabla. " + id_cat_tabla);
