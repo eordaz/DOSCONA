@@ -60,8 +60,8 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
                 result = getCatalogo(params);
             } else if (method.equals("getCatMonedas")) {
                 result = insertorUpdateCatalogo(params);
-                /**
-                 * else if (method.equals("getCatDependencias")) { result =
+                /**TODO: por realizar
+                 * else if (method.equals("EliminarCatalogo")) { result =
                  * getCatDependencias(params); } else if
                  * (method.equals("getCatSubDependencias")) { result =
                  * getCatSubDependencias(params);
