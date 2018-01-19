@@ -73,13 +73,52 @@ public class RecordManager {
         return resultados;
     }
 
+    public JSONObject queryGetLogin(String query) {
+        String methodStr = className + "::queryGetLogin";
+        ResultSet rs = null;
+        JSONObject result = new JSONObject();
+        int count = 1;
+        try {
+            getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            //LOGGER.log(Level.FINER, methodStr + ">resultados: " + resultados);
+            ResultSetMetaData metadata = rs.getMetaData();
+            int cols = metadata.getColumnCount();
+
+            LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
+                
+            LOGGER.log(Level.INFO, methodStr + ">Entre al for. " );
+                    //JSONObject json = new JSONObject();
+                while (rs.next()) {
+            for (int i = 1; i < cols; i++) {
+            LOGGER.log(Level.INFO, methodStr + ">Entre al whilñe. " );
+            LOGGER.log(Level.INFO, methodStr + ">Entre al count. " + "---"+i);
+                    //JSONObject json_individual = new JSONObject();
+                    result.put(metadata.getColumnName(i), rs.getObject(i));
+            LOGGER.log(Level.INFO, methodStr + ">----- al result. " +result);
+
+                    //LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result);
+                    //result = JSONObject.fromObject(result);
+                }
+                //result.put(i, json);
+            }
+            LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result final. " + result);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
+        } finally {
+            cm.closeConnection();
+        }
+        return result;
+    }
+
     /**
      *
      * @param cm
      * @param query
      * @return
      */
-    public JSONArray executeQueryToArray(String query) {
+    public JSONArray executeQueryToArrayCatalogos(String query) {
         String methodStr = className + "::executeQueryToArray";
         JSONArray json_array = new JSONArray();
         JSONObject json_result = new JSONObject();
@@ -146,8 +185,9 @@ public class RecordManager {
 
             while (rs.next()) {
                 Object next = rs.getObject(columnID);
-                //LOGGER.log(Level.INFO, methodStr + ">Que hay en el next. "+ next);
+                LOGGER.log(Level.FINEST, methodStr + ">Que hay en el next. " + next);
                 result = Integer.valueOf(next.toString());
+                LOGGER.log(Level.FINEST, methodStr + ">Que hay en el result del query. " + result);
             }
             //   LOGGER.log(Level.INFO, methodStr + ">Que hay en el result_array. "+ result_array.size());
         } catch (Exception ex) {
