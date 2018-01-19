@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
+ * Entidad para la tabla Proyecto.
  * @date 19/01/2018
  * @author vsanchez
  */
