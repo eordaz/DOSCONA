@@ -6,6 +6,8 @@
  */
 package conacyt.beans;
 
+import java.io.File;
+import java.io.InputStream;
 import javax.ejb.Local;
 import net.sf.json.JSONObject;
 
@@ -25,5 +27,5 @@ public interface CargaArchivosConacytBeanLocal {
      * @return Regresa un JSONArray con la respuesta dependiendo del servicio
      * que haya sido invocado.
      */
-    public abstract JSONObject processMethod(String method, JSONObject params);
+    public abstract JSONObject processMethod(String method, File file);
 }

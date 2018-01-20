@@ -7,6 +7,8 @@
 package conacyt.beans;
 
 import conacyt.db.RecordManager;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,14 +27,14 @@ public class CargaArchivosConacytBean implements CargaArchivosConacytBeanLocal {
     RecordManager recordManager = null;
     
     @Override
-    public JSONObject processMethod(String method, JSONObject params) {
+    public JSONObject processMethod(String method, File file) {
        String methodStr = className + "::processMethod";
        JSONObject result = null;
        try {
            if (method.equals("getArchivo")) {
-                result = getCargaArchivo(params);
+                result = getCargaArchivo(file);
             } else if (method.equals("insertOrUpdateArchivo")) {
-                result = insertOrUpdateArchivo(params);
+                result = insertOrUpdateArchivo(file);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
             }
@@ -45,11 +47,11 @@ public class CargaArchivosConacytBean implements CargaArchivosConacytBeanLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
-    private JSONObject getCargaArchivo(JSONObject params) {
+    private JSONObject getCargaArchivo(File params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private JSONObject insertOrUpdateArchivo(JSONObject params) {
+    private JSONObject insertOrUpdateArchivo(File params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

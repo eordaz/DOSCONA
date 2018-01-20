@@ -6,6 +6,8 @@
 package resource;
 
 import conacyt.beans.CargaArchivosConacytBeanLocal;
+import java.io.File;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
@@ -19,8 +21,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import net.sf.json.JSONObject;
 
 /**
@@ -45,34 +47,27 @@ public class CargaArchivosConacytResource {
     }
 
     /**
-     * Retrieves representation of an instance of resource.CargaArchivosConacytResource
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public JSONObject getCarga(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
-        return cargaResource(method, json);
-    }
-
-    /**
      * POST method for updating or creating an instance of CargaArchivosConacytResource
      * @param content representation for the resource
      */
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public JSONObject postCarga(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
-        return cargaResource(method, json);
+    @Produces(MediaType.MULTIPART_FORM_DATA)
+    public JSONObject postCarga(@PathParam("method") @DefaultValue("") String method,
+            @FormParam("file") File uploadedInputStream
+            ) {
+        return cargaResource(method, uploadedInputStream);
     }
     
-     private JSONObject cargaResource(String method, String json) {
+     private JSONObject cargaResource(String method, File uploadedInputStream) {
        String methodStr = className + "::cargaResource";
         JSONObject result = null;
         
+        
         try {
-            if ((json != null && !json.isEmpty())
+            if ((uploadedInputStream != null)
                     && (method != null && !method.isEmpty())) {
-                 JSONObject params = JSONObject.fromObject(json);
-                 result = cargaArchivosConacytBean.processMethod(method, params);
+                
+                 result = cargaArchivosConacytBean.processMethod(method, uploadedInputStream);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: parámetro json nulo o vacío");
             }

@@ -61,12 +61,9 @@ json =
             </div>
           </code>
           <h3 class="titles">Probar:</h3>
-          <form class="forms" action="resources/conacyt/carga/getArchivo" method="GET">
-            <input type="text" name="json" id="json" size="60" placeholder=" json">
-            <input type="submit" value="GET">
-          </form>
-          <form class="forms" action="resources/conacyt/carga/getArchivo" method="POST">
-            <input type="text" name="json" id="json" size="60" placeholder=" json">
+          
+          <form class="forms" action="resources/conacyt/carga/getArchivo" enctype="multipart/form-data" method="POST">
+           <input name="file" id="filename" type="file" /><br><br>
             <input type="submit" value="POST">
           </form>
         </div>
