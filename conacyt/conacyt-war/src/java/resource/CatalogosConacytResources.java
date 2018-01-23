@@ -30,51 +30,50 @@ import net.sf.json.JSONArray;
  *
  * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com>
  */
-@Path("conacyt/{method:.*}")
+@Path("conacyt/catalogos/{method:.*}")
 public class CatalogosConacytResources {
 
 
     @Context
     private UriInfo context;
-    CatalogosConacytBeanLocal catalogosConacytBean = lookupCatalogosConacytBeanLocal();   
-    private static String className = "ConacytResources";
-    private static final Logger LOGGER = Logger.getLogger("ConacytResources");
+    CatalogosConacytBeanLocal catalogosConacytBean = null;   
+    private static String className = "CatalogosConacytResources";
+    private static final Logger LOGGER = Logger.getLogger("CatalogosConacytResources");
 
     /**
-     * Creates a new instance of ConacytResource
+     * Creates a new instance of CatalogosConacytResources
      */
-    /**public ConacytResources() {
+    public CatalogosConacytResources() {
         try {
             LOGGER.setLevel(Level.INFO);
-            javax.naming.Context initialContext = new InitialContext();
-            Object obj = initialContext.lookup("ejb/ConacytRegistroBeanLocal");
-            if (obj != null) {
-                //editionManager = (EditCollectionsBeanRemote) obj;
-            }
+            catalogosConacytBean = lookupCatalogosConacytBeanLocal(); 
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, className + "::EditResources>Error al instanciar el WS, bean no disponible. ", ex);
+            LOGGER.log(Level.SEVERE, className + "::CatalogosConacytResources>Error al instanciar el WS, bean no disponible. ", ex);
         }
-    }*/
+    }
 
     /**
-     * Retrieves representation of an instance of resource.ConacytResource
+     * Retrieves representation of an instance of resource.CatalogosConacytResources
+     * @param method
+     * @param json
      * @return an instance of java.lang.String
      */
     @GET
     @Produces("application/json")
     public JSONArray conacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
-        return conacytResource(method, json);
+        return catalogosConacytResource(method, json);
     }
 
     /**
-     * PUT method for updating or creating an instance of ConacytResource
-     * @param content representation for the resource
+     * POST method for updating or creating an instance of CatalogosConacytResources
+     * @param method
+     * @param json
      * @return an HTTP response with content of the updated or created resource.
      */
     @POST
     @Produces("application/json")
     public JSONArray conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
-        return conacytResource(method, json);
+        return catalogosConacytResource(method, json);
     }
     
      /**
@@ -85,53 +84,23 @@ public class CatalogosConacytResources {
      * @param json Cadena de parámetros
      * @return response dependienso el tipo de objeto.
      */
-    public JSONArray conacytResource(String method, String json) {
-        String methodStr = className + "::conacytResource";
+    public JSONArray catalogosConacytResource(String method, String json) {
+        String methodStr = className + "::catalogosConacytResource";
         JSONArray result = null;
         
         try {
             if ((json != null && !json.isEmpty())
                     && (method != null && !method.isEmpty())) {
-
-                //JSONRecord params = new JSONRecord(json);                
+                            
                 JSONObject params = JSONObject.fromObject(json);
                 result = catalogosConacytBean.processMethod(method, params);
-
-                //responseResult = csvcreator.getMultiCollCSVfromCDB(params); //oldie
-//                responseResult = csvcreator.exportMultiColl(params);  //Nuevo método para control desde session Manager
-               /** responseResult = conacytLocalBean.processMethod(method, params);
-                LOGGER.log(Level.FINE, methodStr + ">  responseResult..." + responseResult);
-                if (responseResult != null) {
-
-                    if (responseResult instanceof String) {
-                        filename = (String) responseResult;
-                        
-                        archivoCSV = Response.ok(filename, "plain/text").build();
-                    } else if (responseResult instanceof File) {
-                        csvf = (File) responseResult;
-
-                        LOGGER.log(Level.FINE, methodStr + ">  archivo..." + csvf.getName());
-//                                if (csvf != null && csvf.exists() && csvf.isFile() && csvf.canRead()) {
-                        if (csvf.exists() && csvf.isFile() && csvf.canRead()) {
-
-                            String mt = new MimetypesFileTypeMap().getContentType(csvf);
-//                        LOGGER.log(Level.INFO, className + "::tipo  csvf.getName() >" + csvf.getName());//borrar
-                            archivoCSV = Response.ok(csvf, mt).header("Content-Disposition", "inline; filename=" + csvf.getName()).build();
-                            LOGGER.log(Level.FINE, methodStr + ">  archivo..." + csvf.getName());
-                        } else {
-                            LOGGER.log(Level.WARNING, className + ">Error: No es posible acceder al archivo" + csvf.getAbsolutePath());
-//                        return null;
-                        }
-                    }
-                } else {
-                    LOGGER.log(Level.WARNING, methodStr + ">Error: el archivo no ha sido generado");
-                }*/
+                
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: parámetro json nulo o vacío");
             }
-            LOGGER.log(Level.INFO, className + "::Proceso concluido... >");
+            //LOGGER.log(Level.INFO, className + "::Proceso concluido... >");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, className + ">:: Problema en la identificación de Caso", e);
+            LOGGER.log(Level.SEVERE, className + ">Error:: Problema en la identificación de Caso", e);
         }
         return result;
     }

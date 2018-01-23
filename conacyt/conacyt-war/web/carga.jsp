@@ -31,7 +31,7 @@
           <h3 class="titles">Ejemplo:</h3>
           <code class="example">
             <div class="indent-1">
-              resources/conacyt/carga/getArchivo
+              resources/conacyt/archivos/getArchivo
             </div>
             <br>
             <div class="params indent-2">
@@ -62,13 +62,13 @@ json =
           </code>
           <h3 class="titles">Probar:</h3>
           
-          <form class="forms" action="resources/conacyt/carga/getArchivo" enctype="multipart/form-data" method="POST">
+          <form class="forms" action="resources/conacyt/archivos/getArchivo" enctype="multipart/form-data" method="POST">
            <input name="file" id="filename" type="file" /><br><br>
             <input type="submit" value="POST">
           </form>
         </div>
 
-       <div class="section">
+       <!--div class="section">
           <h2 class="titles">datoscsv</h2>
           <div class="description">
             Servicio encargado de generar un archivo CSV a partir de datos en formato JSON.

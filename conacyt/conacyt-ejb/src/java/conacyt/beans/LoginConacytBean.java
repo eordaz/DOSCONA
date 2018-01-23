@@ -2,9 +2,7 @@
  * Patronato Universitario
  * Universidad Nacional Autónoma de México
  * 
- * @Date 12 de Enero del 2018
- * @DateModified    
- * @author Edith Corina Ordaz Garnica <edith.ordaz@patronato.unam.mx> <edith.ordaz@gmail.com> 
+ * @Date 12 de Enero del 2018   
  */
 package conacyt.beans;
 
@@ -82,18 +80,21 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
                 //LOGGER.log(Level.FINEST, methodStr + ">Error: > El id_usuario.> " + id_usuario);
                 if (id_usuario != null && id_usuario > 0) {
                     query_usuario_rol = "SELECT * FROM " + conacyt_cfg.getString("v_usuario_rol")
-                            + " WHERE id_usuario = "+ id_usuario + " AND estatus=\'Activo\'";
+                            + " WHERE id_usuario = " + id_usuario + " AND estatus=\'Activo\'";
                     //LOGGER.log(Level.FINEST, methodStr + ">Error: > El query_usuario_rol.> " + query_usuario_rol);
                     result = recordManager.queryGetLogin(query_usuario_rol);
-                    LOGGER.log(Level.FINEST, methodStr + ">Error: > El result.> " + result);
+                    //LOGGER.log(Level.FINEST, methodStr + ">Error: > El result.> " + result);
                 } else {
-                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El catálogo que esta solicitando no se encuentra registrado en la base de datos.");
+                    result = new JSONObject().accumulate("getLogin", "-1").accumulate("mensaje", "El usuario que esta solicitando no es válido.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El usuario que esta solicitando no es válido.");
                 }
             } else {
+                result = new JSONObject().accumulate("getLogin", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método. ", ex);
+            result = new JSONObject().accumulate("getLogin", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
         return result;
     }

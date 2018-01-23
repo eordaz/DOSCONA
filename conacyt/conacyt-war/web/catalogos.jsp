@@ -31,7 +31,7 @@
           <h3 class="titles">Ejemplo:</h3>
           <code class="example">
             <div class="indent-1">
-              resources/conacyt/getCatalogo
+              resources/conacyt/catalogos/getCatalogo
             </div>
             <br>
             <div class="params indent-2">
@@ -62,11 +62,11 @@ json =
             </div>
           </code>
           <h3 class="titles">Probar:</h3>
-          <form class="forms" action="resources/conacyt/getCatalogo" method="GET">
+          <form class="forms" action="resources/conacyt/catalogos/getCatalogo" method="GET">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="GET">
           </form>
-          <form class="forms" action="resources/conacyt/getCatalogo" method="POST">
+          <form class="forms" action="resources/conacyt/catalogos/getCatalogo" method="POST">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="POST">
           </form>

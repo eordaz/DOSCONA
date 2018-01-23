@@ -30,7 +30,6 @@ import net.sf.json.JSONObject;
 @Path("conacyt/login/{method:.*}")
 public class LoginConacytResource {
 
-
     @Context
     private UriInfo context;
     LoginConacytBeanLocal loginConacytBean = null;
@@ -41,7 +40,7 @@ public class LoginConacytResource {
      * Creates a new instance of LoginConacytResource
      */
     public LoginConacytResource() {
-        try{
+        try {
             LOGGER.setLevel(Level.INFO);
             loginConacytBean = lookupLoginConacytBeanLocal();
         } catch (Exception ex) {
@@ -51,18 +50,30 @@ public class LoginConacytResource {
 
     /**
      * POST method for updating or creating an instance of LoginConacytResource
-     * @param content representation for the resource
+     *
+     * @param method Método que será invocado.
+     * @param json JSON de parámetros: {"param1_":"value1","param_2":"value_2"}
+     * @return JSONObject {"campo1":"value1","campo2":"value2"}
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public JSONObject conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
+    public JSONObject conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("") String json) {
         return loginConacytResource(method, json);
     }
 
+    /**
+     * Método privado para realizar la invocación al bean de logica para la
+     * ejecución de las funcionalidades requeridas para el login del usuario.
+     *
+     * @param method Método que será invocado.
+     * @param json JSON de parámetros: {"param1_":"value1","param_2":"value_2"}
+     * @return JSONObject {"campo1":"value1","campo2":"value2"}
+     */
     private JSONObject loginConacytResource(String method, String json) {
-        String methodStr = className + "::conacytResource";
+        String methodStr = className + "::loginConacytResource";
         JSONObject result = null;
-        
+
+        // LOGGER.log(Level.WARNING, methodStr + ">params de tipo json "+json);
         try {
             if ((json != null && !json.isEmpty())
                     && (method != null && !method.isEmpty())) {
@@ -89,6 +100,5 @@ public class LoginConacytResource {
             throw new RuntimeException(ne);
         }
     }
-    
-    
+
 }

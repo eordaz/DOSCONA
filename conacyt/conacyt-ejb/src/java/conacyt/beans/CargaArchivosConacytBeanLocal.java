@@ -7,7 +7,6 @@
 package conacyt.beans;
 
 import java.io.File;
-import java.io.InputStream;
 import javax.ejb.Local;
 import net.sf.json.JSONObject;
 
