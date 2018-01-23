@@ -103,14 +103,17 @@ public class CatalogosConacytBean implements CatalogosConacytBeanLocal {
                     
                 } else {
                     result = new JSONObject().accumulate("getCatalogo", "-1").accumulate("mensaje", "El catálogo que esta solicitando no se encuentra registrado en la base de datos.");
+                    result_query=JSONArray.fromObject(result);
                     LOGGER.log(Level.WARNING, methodStr + ">Error: > El catálogo que esta solicitando no se encuentra registrado en la base de datos." + params.getString("source"));
                 }
             } else {
                  result = new JSONObject().accumulate("getCatalogo", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                 result_query=JSONArray.fromObject(result);
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
             }
         } catch (Exception ex) {
             result = new JSONObject().accumulate("getCatalogo", "-1").accumulate("mensaje", "Excepción al ejecutar el método. "+ex);
+            result_query=JSONArray.fromObject(result);
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método. ", ex);
         }
         return result_query;
