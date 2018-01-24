@@ -87,16 +87,14 @@ public class RecordManager {
             int cols = metadata.getColumnCount();
 
             LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
-                
-            LOGGER.log(Level.INFO, methodStr + ">Entre al for. " );
-                    //JSONObject json = new JSONObject();
-                while (rs.next()) {
-            for (int i = 1; i < cols; i++) {
-            LOGGER.log(Level.INFO, methodStr + ">Entre al whilñe. " );
-            LOGGER.log(Level.INFO, methodStr + ">Entre al count. " + "---"+i);
+
+            LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
+            //JSONObject json = new JSONObject();
+            while (rs.next()) {
+                for (int i = 1; i < cols; i++) {
                     //JSONObject json_individual = new JSONObject();
                     result.put(metadata.getColumnName(i), rs.getObject(i));
-            LOGGER.log(Level.INFO, methodStr + ">----- al result. " +result);
+                    LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
 
                     //LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result);
                     //result = JSONObject.fromObject(result);
@@ -118,8 +116,8 @@ public class RecordManager {
      * @param query
      * @return
      */
-    public JSONArray executeQueryToArrayCatalogos(String query) {
-        String methodStr = className + "::executeQueryToArray";
+    public JSONArray executeQueryToArrayCatalogos(String query, boolean esSubdependencia) {
+        String methodStr = className + "::executeQueryToArrayCatalogos";
         JSONArray json_array = new JSONArray();
         JSONObject json_result = new JSONObject();
         ResultSet rs = null;
@@ -134,13 +132,17 @@ public class RecordManager {
 
                 while (rs.next()) {
                     JSONObject json_individual = new JSONObject();
-                    json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
-                    json_individual.put(metadata.getColumnName(i + 2), rs.getObject(3));
-                    json_individual.put(metadata.getColumnName(i + 3), rs.getString(4));
-
-                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + json_result);
+                    if (!esSubdependencia) {
+                        json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
+                        json_individual.put(metadata.getColumnName(i + 3), rs.getObject(3));
+                        json_individual.put(metadata.getColumnName(i + 4), rs.getString(4));
+                    //json_result = JSONObject.fromObject(json_individual);
+                    } else {
+                        json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
+                        json_individual.put(metadata.getColumnName(i + 4), rs.getObject(4));
+                        json_individual.put(metadata.getColumnName(i + 5), rs.getString(5));
+                    }
                     json_result = JSONObject.fromObject(json_individual);
-                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result final. " + json_result);
                     json_array.add(json_result);
                     LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_array final. " + json_array);
                 }
@@ -153,15 +155,6 @@ public class RecordManager {
             cm.closeConnection();
         }
         return json_array;
-    }
-
-    public void forEachByMap(HashMap map) {
-        String methodStr = className + "::forEachByMap";
-        for (Object key : map.keySet()) {
-            LOGGER.log(Level.SEVERE, methodStr + ">Iterating or looping map using java5 foreach loop: " + methodStr);
-            LOGGER.log(Level.SEVERE, methodStr + ">key: " + key + " value: " + map.get(key));
-
-        }
     }
 
     /**

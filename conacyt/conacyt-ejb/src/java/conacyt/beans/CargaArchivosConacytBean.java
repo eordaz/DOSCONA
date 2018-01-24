@@ -7,11 +7,11 @@
 package conacyt.beans;
 
 import conacyt.db.RecordManager;
-import java.io.File;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
 import net.sf.json.JSONObject;
 
 /**
@@ -26,7 +26,7 @@ public class CargaArchivosConacytBean implements CargaArchivosConacytBeanLocal {
     RecordManager recordManager = null;
     
     @Override
-    public JSONObject processMethod(String method, File file) {
+    public JSONObject processMethod(String method, HttpServletRequest file) {
        String methodStr = className + "::processMethod";
        JSONObject result = null;
        try {
@@ -46,11 +46,11 @@ public class CargaArchivosConacytBean implements CargaArchivosConacytBeanLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
-    private JSONObject getCargaArchivo(File params) {
+    private JSONObject getCargaArchivo(HttpServletRequest params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private JSONObject insertOrUpdateArchivo(File params) {
+    private JSONObject insertOrUpdateArchivo(HttpServletRequest params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
