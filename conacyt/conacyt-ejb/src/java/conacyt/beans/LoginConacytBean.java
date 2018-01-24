@@ -70,7 +70,7 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
         Integer id_usuario = null;
 
         try {
-            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("usuario").isEmpty() && !params.getString("pass").isEmpty()) {
+            if (params != null) {
                 query_usuario = "SELECT " + conacyt_cfg.getString("column_id_usuario")
                         + " FROM " + conacyt_cfg.getString("usuario")
                         + " WHERE usuario = \'" + params.getString("usuario") + "\' AND password = \'" + params.getString("pass") + "\'";

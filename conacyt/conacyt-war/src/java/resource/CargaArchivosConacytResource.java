@@ -9,6 +9,7 @@ import conacyt.beans.CargaArchivosConacytBeanLocal;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
@@ -34,9 +35,8 @@ import net.sf.json.JSONObject;
 @Path("conacyt/archivos/{method:.*}")
 public class CargaArchivosConacytResource {
 
-
     @Context
-    private UriInfo context;   
+    private UriInfo context;
     private static String className = "CargaArchivosConacytResource";
     private static final Logger LOGGER = Logger.getLogger("CargaArchivosConacytResource");
     CargaArchivosConacytBeanLocal cargaArchivosConacytBean = null;
@@ -45,7 +45,7 @@ public class CargaArchivosConacytResource {
      * Creates a new instance of CargaArchivosConacyt
      */
     public CargaArchivosConacytResource() {
-        try{
+        try {
             LOGGER.setLevel(Level.FINER);
             cargaArchivosConacytBean = lookupCargaArchivosConacytBeanLocal();
         } catch (Exception ex) {
@@ -54,51 +54,57 @@ public class CargaArchivosConacytResource {
     }
 
     /**
-     * POST method for updating or creating an instance of CargaArchivosConacytResource
+     * POST method for updating or creating an instance of
+     * CargaArchivosConacytResource
+     *
      * @param method
      * @param fileName
      * @param request
      * @param response
-     * @return 
-     * @throws java.io.IOException 
+     * @return
+     * @throws java.io.IOException
      */
     @POST
     @Produces(MediaType.MULTIPART_FORM_DATA)
     public Response postCarga(@PathParam("method") @DefaultValue("") String method,
-           @PathParam("file")  File fileName,
-           @Context HttpServletRequest request,
-           @Context HttpServletResponse response
-            ) throws IOException {
-        return cargaResource(method, fileName, request, response);
+            @Context HttpServletRequest request,
+            @Context HttpServletResponse response
+    ) throws IOException {
+        return cargaResource(method, request, response);
     }
-    
-     private Response cargaResource(String method,File fileName,HttpServletRequest request, HttpServletResponse response) throws IOException {
-       String methodStr = className + "::cargaResource";
-       Response res = null;
+
+    private Response cargaResource(String method, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String methodStr = className + "::cargaResource";
+        Response res = null;
         JSONObject result = null;
-                LOGGER.log(Level.WARNING, methodStr + ">A ver: "+ " method:>"+ request.getMethod()+ " ContextPath:> " + request.getContextPath());
-        
+
         try {
-            if ((fileName != null && !fileName.exists())
+            if ((request != null)
                     && (method != null && !method.isEmpty())) {
-                
-                LOGGER.log(Level.WARNING, methodStr + ">A ver: "+ " request:>"+ request.getContextPath());
-                LOGGER.log(Level.WARNING, methodStr + ">A ver: "+ " request:>"+ request.getMethod());
-                
-                LOGGER.log(Level.WARNING, methodStr + ">A ver: "+ " response:>"+ response.getBufferSize());
-                LOGGER.log(Level.WARNING, methodStr + ">A ver fileName : "+fileName+ " method:>"+ response.getHeaderNames());
-                 result = cargaArchivosConacytBean.processMethod(method,fileName);
+
+                LOGGER.log(Level.WARNING, methodStr + ">A ver: " + " request ContextPath:>" + request.getContextPath());
+                LOGGER.log(Level.WARNING, methodStr + ">A ver: " + " request:>" + request.getMethod());
+
+                while (request.getHeaderNames().hasMoreElements()) {
+                    Object next = request.getHeaderNames().nextElement();
+                    LOGGER.log(Level.WARNING, methodStr + ">A ver  method:>" + next);
+
+                }
+
+                //RESPONSE
+                LOGGER.log(Level.WARNING, methodStr + ">A ver: " + " response:>" + response.getBufferSize());
+                LOGGER.log(Level.WARNING, methodStr + ">A ver  method:>" + response.getContentType());
+
+                result = cargaArchivosConacytBean.processMethod(method, request);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: parámetro json nulo o vacío");
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, className + ">:: Problema en la identificación de Caso", e);
         }
         return res;
     }
 
-     
-     
     private CargaArchivosConacytBeanLocal lookupCargaArchivosConacytBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
@@ -109,7 +115,4 @@ public class CargaArchivosConacytResource {
         }
     }
 
-   
-    
-    
 }

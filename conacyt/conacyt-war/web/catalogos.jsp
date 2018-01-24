@@ -56,8 +56,8 @@ json =
             <div class="response indent-1">
         Entrega el JSONArray, con el arreglo de los registros contenidos en el catálogo.
         [ 
-          {"id_cat_cat_catalogos":2,"id_cat_tabla":"Administrador","valor":"Rol asignado para Administrador"},
-          {"id_cat_cat_catalogos":3,"id_cat_tabla":"Dependencia","valor":"Rol asignada para Dependencias"} 
+          {"id_cat_cat_catalogos":2,"valor":"Administrador","descripcion":"Rol asignado para Administrador"},
+          {"id_cat_cat_catalogos":3,"valor":"Dependencia","descripcion":"Rol asignada para Dependencias"} 
         ]
             </div>
           </code>
@@ -72,30 +72,24 @@ json =
           </form>
         </div>
 
-       <!--div class="section">
-          <h2 class="titles">datoscsv</h2>
+       <div class="section">
+          <h2 class="titles">getSubdependencias</h2>
           <div class="description">
-            Servicio encargado de generar un archivo CSV a partir de datos en formato JSON.
+            Servicio mediante el cual se obtienen los registros de lassubdependencias que contiene la dependencia seleccionada.
           </div>
           <h3 class="titles">Ejemplo:</h3>
           <code class="example">
             <div class="indent-1">
-              resources/exportCSV/datoscsv
+              resources/conacyt/catalogos/getSubdependencias
             </div>
             <br>
             <div class="params indent-2">
               <pre>
-json =
-        {
-            "data": [
-                ["h1", "h2"],
-                [1, 2],
-                ["algo,tóoodo", "otro"]
-            ],
-            "qualified": "true",
-            "filename": "myCSV.csv"
-        }
-              </pre>
+json =        
+          {
+            "id_cat_catalogo": 9
+          }       
+            </pre>
             </div>
             <br>
             <div class="indent-1">
@@ -103,27 +97,39 @@ json =
             </div>
             <br>
             <div class="indent-2">
-              <strong>data</strong>: arreglo bidimensional de datos. Los elementos deben de ser del mismo tamaño; se considerará  que el primer elemento contiene los encabezados y los siguientes a los valores (obligatorio). <br>              
+              <strong>id_cat_catalogo</strong>: identificador de la dependencia (obligatorio). <br>                   
             </div>
           </code>
           <h3 class="titles">Respuesta típica:</h3>
           <code class="code">
             <div class="response indent-1">
-        Entrega el archivo csv
+json =
+        [
+           {
+            "id_cat_subdependencia": 1,
+            "clave_subdependencia": 01,
+            "descripcion":"DIVISION DE ESTUDIOS PROFESIONALES"
+           },
+           {
+            "id_cat_subdependencia": 2,
+            "clave_subdependencia": 03,
+            "descripcion":"CENTRO DE INVESTIGACIÓN INTERDISCIPLINARIAS EN CIENCIAS Y HUMANIDADES"
+           }
+        ] 
             </div>
           </code>
           <h3 class="titles">Probar:</h3>
-          <form class="forms" action="resources/exportCSV/datoscsv" method="GET">
+          <form class="forms" action="resources/conacyt/catalogos/getSubdependencias" method="GET">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="GET">
           </form>
-          <form class="forms" action="resources/exportCSV/datoscsv" method="POST">
+          <form class="forms" action="resources/conacyt/catalogos/getSubdependencias" method="POST">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="POST">
           </form>
         </div>   
         
-        <div class="section">
+        <!--div class="section">
           <h2 class="titles">wscsv</h2>
           <div class="description">
             Servicio mediante el cual se genera un archivo CSV a partir de los datos (en formato JSON) entregados por un servicio web.
