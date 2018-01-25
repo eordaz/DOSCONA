@@ -88,10 +88,11 @@ public class RecordManager {
 
             LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
 
-            LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
             //JSONObject json = new JSONObject();
             while (rs.next()) {
+            LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
                 for (int i = 1; i < cols; i++) {
+            LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
                     //JSONObject json_individual = new JSONObject();
                     result.put(metadata.getColumnName(i), rs.getObject(i));
                     LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);

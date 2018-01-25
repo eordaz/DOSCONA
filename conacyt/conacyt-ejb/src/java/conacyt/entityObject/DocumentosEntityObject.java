@@ -14,6 +14,7 @@ import javax.persistence.Id;
 
 /**
  * Entidad para la tabla Proyecto.
+ *
  * @date 19/01/2018
  * @author vsanchez
  */
@@ -24,6 +25,16 @@ public class DocumentosEntityObject implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private int id_documentos_proy;
+    private String nombre_archivo;
+    private String ruta;
+    private String serie;
+    private String folio;
+    private String rfc;
+    private float importe;
+    private Date fecha_actualizacion;
+    private String estatus;
+    private int usuario_id;
 
     public Long getId() {
         return id;
@@ -112,22 +123,7 @@ public class DocumentosEntityObject implements Serializable {
     public void setUsuario_id(int usuario_id) {
         this.usuario_id = usuario_id;
     }
-       
-       private int id_documentos_proy;       
-       private String nombre_archivo;
-       private String ruta;
-       private String serie;
-       private String folio;
-       private String rfc;
-       private float importe;
-       private Date fecha_actualizacion;
-       private String estatus;
-       private int usuario_id;
-       
-       
-       
-	
-  
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -152,5 +148,5 @@ public class DocumentosEntityObject implements Serializable {
     public String toString() {
         return "conacyt.beansObject.proyecto[ id=" + id + " ]";
     }
-    
+
 }

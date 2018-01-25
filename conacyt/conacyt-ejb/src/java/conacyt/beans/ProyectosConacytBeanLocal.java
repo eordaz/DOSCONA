@@ -6,6 +6,7 @@
 package conacyt.beans;
 
 import javax.ejb.Local;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -26,5 +27,5 @@ public interface ProyectosConacytBeanLocal {
      * @return Regresa un JsonObject con la respuesta dependiendo del servicio
      * que haya sido invocado.
      */
-    public abstract JSONObject processMethod(String method, JSONObject params);
+    public abstract JSONArray processMethod(String method, JSONObject params);
 }

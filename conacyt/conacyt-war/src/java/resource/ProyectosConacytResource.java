@@ -62,7 +62,7 @@ public class ProyectosConacytResource {
      */
     @GET
     @Produces("application/json")
-    public JSONObject proyectosConacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
+    public JSONArray proyectosConacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
         return proyectosConacytResource(method, json);
     }
 
@@ -74,13 +74,13 @@ public class ProyectosConacytResource {
      */
     @POST
     @Produces("application/json")
-    public JSONObject proyectosConacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
+    public JSONArray proyectosConacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
         return proyectosConacytResource(method, json);
     }
 
-    private JSONObject proyectosConacytResource(String method, String json) {
+    private JSONArray proyectosConacytResource(String method, String json) {
         String methodStr = className + "::proyectosConacytResource";
-        JSONObject result = null;
+        JSONArray result = null;
 
         // LOGGER.log(Level.WARNING, methodStr + ">params de tipo json "+json);
         try {

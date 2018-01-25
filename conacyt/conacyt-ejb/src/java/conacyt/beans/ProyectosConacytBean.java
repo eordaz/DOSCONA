@@ -6,10 +6,12 @@
 package conacyt.beans;
 
 import conacyt.db.RecordManager;
+import conacyt.utils.Utilerias;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -26,8 +28,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    
-     public ProyectosConacytBean() {
+    public ProyectosConacytBean() {
         try {
             LOGGER.setLevel(Level.FINEST);
             recordManager = new RecordManager(conacyt_cfg.getString("datasource"));
@@ -36,17 +37,17 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
 //            LOGGER.setLevel(Level.FINER);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, className + "::> Error al crear el objeto.", e);
-}
+        }
     }
 
     @Override
-    public JSONObject processMethod(String method, JSONObject params) {
+    public JSONArray processMethod(String method, JSONObject params) {
         String methodStr = className + "::processMethod";
-        JSONObject result = null;
+        JSONArray result = null;
 
         try {
-            if (method.equals("getProyectosID")) {
-                result = getProyectosID(params);
+            if (method.equals("getProyectosByClave")) {
+                result = getProyectosByClave(params);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
             }
@@ -62,36 +63,44 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
      * {"user":"eordaz","pass":"123456asdf"}
      * @return JSON de salida //{"login_result":true}
      */
-    
-    private JSONObject getProyectosID(JSONObject params) {
-        String methodStr = className + "::getProyectosID";
-        JSONObject result = null;
-        
-        String query = null;
-        String sql = null;
+    private JSONArray getProyectosByClave(JSONObject params) {
+        String methodStr = className + "::getProyectosByClave";
+        JSONObject result_json = null, nombre_proyecto = null;
+        JSONArray result = null;
+        boolean esComprobacion = false;
+        String query_proyecto = null;
+        String clave_proyecto = null, clave_recurso = null;
         Integer id_proyecto = null;
-     
 
         try {
-            if (params != null && !params.isEmpty() && !params.isNullObject() &&  !params.getString("clave_dependencia").isEmpty() && !params.getString("clave_subdependencia").isEmpty()) {
-                
+            if (params != null && !params.isEmpty() && !params.isNullObject()
+                    && !params.getString("clave_proyecto").isEmpty()) {
+                nombre_proyecto = Utilerias.separaNombreProyecto(params.getString("clave_proyecto"));
+                clave_recurso = "\'" + (String) nombre_proyecto.get("clave_recurso") + "\'";
+                clave_proyecto = "\'" + (String) nombre_proyecto.get("clave_proyecto") + "\'";
+                esComprobacion = params.containsKey("esComprobacion") ? params.getBoolean("esComprobacion") : esComprobacion;
                 /*Verifica que exista el recurso en la tabla */
-                query ="select clave_proyecto, clave_recurso, estatus  from " + conacyt_cfg.getString("v_proyectos")+ " where " +  conacyt_cfg.getString("column_clave_dependencia")+ "=\'" + params.getString("clave_dependencia")+
-                        "\' and  " +  conacyt_cfg.getString("column_clave_subdependencia")+ "=\'"+ params.getString("clave_subdependencia") +"\'";
-                LOGGER.log(Level.WARNING, methodStr + ">query: > "+ query);
-                result = recordManager.queryGetLogin(query);                       
-                
-               //result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                if (esComprobacion) {
+                    query_proyecto = "SELECT " + conacyt_cfg.getString("campos_comprobacion") + " FROM " + conacyt_cfg.getString("v_proyectos") + " WHERE estatus = \'Activo\' "
+                            + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
+                    LOGGER.log(Level.WARNING, methodStr + ">query_comprobacion: > " + query_proyecto);
+                } else {
+                    query_proyecto = "SELECT " + conacyt_cfg.getString("campos_proyecto") + " FROM " + conacyt_cfg.getString("v_proyectos") + " WHERE estatus = \'Activo\' "
+                            + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
+                    LOGGER.log(Level.WARNING, methodStr + ">query_proyecto: > " + query_proyecto);
+                }
+                result_json = recordManager.queryGetLogin(query_proyecto);
+                //result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
             } else {
-                result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                result_json = new JSONObject().accumulate("getProyectosByClave", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
             }
         } catch (Exception ex) {
-            result = new JSONObject().accumulate("getProceso", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            result_json = new JSONObject().accumulate("getProyectosByClave", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
+        result = JSONArray.fromObject(result_json);
         return result;
     }
-    
-    
+
 }

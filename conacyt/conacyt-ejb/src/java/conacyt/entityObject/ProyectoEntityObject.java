@@ -20,6 +20,7 @@ import javax.persistence.Id;
 public class ProyectoEntityObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -38,8 +39,8 @@ public class ProyectoEntityObject implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long _id) {
+        id = _id;
     }
 
     public int getId_fondo() {
@@ -113,10 +114,6 @@ public class ProyectoEntityObject implements Serializable {
     public void setUsuario_id(int usuario_id) {
         this.usuario_id = usuario_id;
     }
-            
-   
-    
-
   
     @Override
     public int hashCode() {
@@ -142,5 +139,5 @@ public class ProyectoEntityObject implements Serializable {
     public String toString() {
         return "conacyt.beansObject.proyecto[ id=" + id + " ]";
     }
-    
 }
+
