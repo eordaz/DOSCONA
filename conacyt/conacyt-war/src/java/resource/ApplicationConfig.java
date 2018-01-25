@@ -34,6 +34,7 @@ public class ApplicationConfig extends Application {
         resources.add(resource.CargaArchivosConacytResource.class);
         resources.add(resource.CatalogosConacytResources.class);
         resources.add(resource.LoginConacytResource.class);
+        resources.add(resource.ProyectosConacytResource.class);
     }
     
 }
