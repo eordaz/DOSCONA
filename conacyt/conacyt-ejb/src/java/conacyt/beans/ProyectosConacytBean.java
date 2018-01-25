@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
 
 /**
  *
- * @author vsanchez
+ * @author vsanchez Edithiña
  */
 @Stateless
 public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
