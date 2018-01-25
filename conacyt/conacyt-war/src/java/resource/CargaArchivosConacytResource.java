@@ -85,11 +85,7 @@ public class CargaArchivosConacytResource {
                 LOGGER.log(Level.WARNING, methodStr + ">A ver: " + " request ContextPath:>" + request.getContextPath());
                 LOGGER.log(Level.WARNING, methodStr + ">A ver: " + " request:>" + request.getMethod());
 
-                while (request.getHeaderNames().hasMoreElements()) {
-                    Object next = request.getHeaderNames().nextElement();
-                    LOGGER.log(Level.WARNING, methodStr + ">A ver  method:>" + next);
-
-                }
+                
 
                 //RESPONSE
                 LOGGER.log(Level.WARNING, methodStr + ">A ver: " + " response:>" + response.getBufferSize());

@@ -6,7 +6,6 @@
 package conacyt.beans;
 
 import conacyt.db.RecordManager;
-import java.sql.ResultSet;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +45,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         JSONObject result = null;
 
         try {
-            if (method.equals("getProyecto")) {
+            if (method.equals("getProyectosID")) {
                 result = getProyectosID(params);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
@@ -77,11 +76,11 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
             if (params != null && !params.isEmpty() && !params.isNullObject() &&  !params.getString("clave_dependencia").isEmpty() && !params.getString("clave_subdependencia").isEmpty()) {
                 
                 /*Verifica que exista el recurso en la tabla */
-                query ="select clave_proyeco, clave_recurso, estatus  from CONACYT_desarrollo.dbo." + conacyt_cfg.getString("v_proyectos")+ "·where " +  conacyt_cfg.getString("column_clave_dependencia")+ "=" + params.getString("clave_dependencia")+
-                        " and  " +  conacyt_cfg.getString("column_clave_subdependencia")+ "="+ params.getString("column_clave_subdependencia") ;
+                query ="select clave_proyecto, clave_recurso, estatus  from " + conacyt_cfg.getString("v_proyectos")+ " where " +  conacyt_cfg.getString("column_clave_dependencia")+ "=\'" + params.getString("clave_dependencia")+
+                        "\' and  " +  conacyt_cfg.getString("column_clave_subdependencia")+ "=\'"+ params.getString("clave_subdependencia") +"\'";
+                LOGGER.log(Level.WARNING, methodStr + ">query: > "+ query);
                 result = recordManager.queryGetLogin(query);                       
                 
-                LOGGER.log(Level.WARNING, methodStr + ">id_proyecto: > "+id_proyecto);
                //result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
             } else {
                 result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
