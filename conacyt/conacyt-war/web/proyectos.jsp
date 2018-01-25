@@ -38,7 +38,7 @@
               <pre>
 json =
         {
-            "clave_dependencia": "743,
+            "clave_dependencia": "211",
             "clave_subdependencia": "01"           
         } 
               </pre>
@@ -62,8 +62,11 @@ json =
             </div>
           </code>
           <h3 class="titles">Probar:</h3>
-          
-          <form class="forms" action="resources/conacyt/proyectos/getProyectos" method="POST">
+          <form class="forms" action="resources/conacyt/proyectos/getProyectosID" method="GET">
+            <input type="text" name="json" id="json" size="60" placeholder=" json">
+            <input type="submit" value="GET">
+          </form>
+          <form class="forms" action="resources/conacyt/proyectos/getProyectosID" method="POST">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="POST">
           </form>
