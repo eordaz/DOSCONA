@@ -48,6 +48,8 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
         try {
             if (method.equals("getLogin")) {
                 result = getLogin(params);
+            } else if (method.equals("insertaOactualizaUsuario")) {
+                result = insertaOactualizaUsuario(params);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
             }
@@ -70,7 +72,9 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
         Integer id_usuario = null;
 
         try {
-            if (params != null) {
+            if (params != null && !params.isEmpty() && !params.isNullObject() &&
+                    !params.getString("usuario").isEmpty() && !params.getString("pass").isEmpty()) {
+                
                 query_usuario = "SELECT " + conacyt_cfg.getString("column_id_usuario")
                         + " FROM " + conacyt_cfg.getString("usuario")
                         + " WHERE usuario = \'" + params.getString("usuario") + "\' AND password = \'" + params.getString("pass") + "\'";
@@ -83,6 +87,7 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
                             + " WHERE id_usuario = " + id_usuario + " AND estatus=\'Activo\'";
                     //LOGGER.log(Level.FINEST, methodStr + ">Error: > El query_usuario_rol.> " + query_usuario_rol);
                     result = recordManager.queryGetJSON(query_usuario_rol);
+                    result.accumulate("getLogin", "1");
                     //LOGGER.log(Level.FINEST, methodStr + ">Error: > El result.> " + result);
                 } else {
                     result = new JSONObject().accumulate("getLogin", "-1").accumulate("mensaje", "El usuario que esta solicitando no es válido.");
@@ -94,6 +99,26 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
             }
         } catch (Exception ex) {
             result = new JSONObject().accumulate("getLogin", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+        }
+        return result;
+    }
+
+    private JSONObject insertaOactualizaUsuario(JSONObject params) {
+        String methodStr = className + "::insertaOactualizaUsuario";
+        JSONObject result = null;
+        String query_usuario = null, query_usuario_rol = null;
+        Integer id_usuario = null;
+//id_usuario, rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password, fecha_registro, fecha_actualizacion, estatus
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("rfc").isEmpty()) {
+            } else {
+                result = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+            }
+
+        } catch (Exception ex) {
+            result = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
         return result;
