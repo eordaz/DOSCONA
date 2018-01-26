@@ -73,7 +73,7 @@ public class RecordManager {
         return resultados;
     }
 
-    public JSONObject queryGetLogin(String query) {
+    public JSONObject queryGetJSON(String query) {
         String methodStr = className + "::queryGetLogin";
         ResultSet rs = null;
         JSONObject result = new JSONObject();

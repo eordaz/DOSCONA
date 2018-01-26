@@ -8,6 +8,7 @@ package conacyt.utils;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -46,6 +47,34 @@ public class Utilerias {
         }
         return nombreProyecto;
     }
+    
+    public static Object parseFromJSONtoObject(JSONObject json_orig) {
+        String methodStr = className + "::parseFromJSONtoObject";
+        JSONObject json_param = new JSONObject();
+        Object objetoEntidad = new Object();
+        
+        try {
+            
+            //LOGGER.log(Level.INFO, methodStr + ">nombreProyecto: " + nombreProyecto);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Error: " + e);
+        }
+        return objetoEntidad;
+    }            
+    
+    public static Object parseFromJSONArraytoObject(JSONArray array_orig) {
+        String methodStr = className + "::parseFromJSONtoObject";
+        JSONArray array_param = new JSONArray();
+        Object objetoEntidad = new Object();
+        
+        try {
+            
+            //LOGGER.log(Level.INFO, methodStr + ">nombreProyecto: " + nombreProyecto);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Error: " + e);
+        }
+        return objetoEntidad;
+    }            
 
     /**public static void main(String args[]) {
         separaNombreProyecto("CY1101019");

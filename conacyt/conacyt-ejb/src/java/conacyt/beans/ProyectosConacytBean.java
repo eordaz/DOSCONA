@@ -46,8 +46,10 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         JSONArray result = null;
 
         try {
-            if (method.equals("getProyectosByClave")) {
-                result = getProyectosByClave(params);
+            if (method.equals("obtenerProyectosPorClave")) {
+                result = obtenerProyectosPorClave(params);
+            } else if (method.equals("insertarOactualizarProyecto")) {
+                result = insertarOactualizarProyecto(params);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
             }
@@ -63,8 +65,8 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
      * {"user":"eordaz","pass":"123456asdf"}
      * @return JSON de salida //{"login_result":true}
      */
-    private JSONArray getProyectosByClave(JSONObject params) {
-        String methodStr = className + "::getProyectosByClave";
+    private JSONArray obtenerProyectosPorClave(JSONObject params) {
+        String methodStr = className + "::obtenerProyectosPorClave";
         JSONObject result_json = null, nombre_proyecto = null;
         JSONArray result = null;
         boolean esComprobacion = false;
@@ -89,14 +91,39 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                             + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
                     LOGGER.log(Level.WARNING, methodStr + ">query_proyecto: > " + query_proyecto);
                 }
-                result_json = recordManager.queryGetLogin(query_proyecto);
+                result_json = recordManager.queryGetJSON(query_proyecto);
                 //result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
             } else {
-                result_json = new JSONObject().accumulate("getProyectosByClave", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
             }
         } catch (Exception ex) {
-            result_json = new JSONObject().accumulate("getProyectosByClave", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+        }
+        result = JSONArray.fromObject(result_json);
+        return result;
+    }
+
+    private JSONArray insertarOactualizarProyecto(JSONObject params) {
+        String methodStr = className + "::insertarOactualizarProyecto";
+        JSONObject result_json = null, nombre_proyecto = null;
+        JSONArray result = null;
+        boolean esComprobacion = false;
+        String query_proyecto = null;
+        String clave_proyecto = null, clave_recurso = null;
+        Integer id_proyecto = null;
+
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject()
+                    && !params.getString("clave_proyecto").isEmpty()) {
+
+            } else {
+                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+            }
+        } catch (Exception ex) {
+            result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
         result = JSONArray.fromObject(result_json);

@@ -82,7 +82,7 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
                     query_usuario_rol = "SELECT * FROM " + conacyt_cfg.getString("v_usuario_rol")
                             + " WHERE id_usuario = " + id_usuario + " AND estatus=\'Activo\'";
                     //LOGGER.log(Level.FINEST, methodStr + ">Error: > El query_usuario_rol.> " + query_usuario_rol);
-                    result = recordManager.queryGetLogin(query_usuario_rol);
+                    result = recordManager.queryGetJSON(query_usuario_rol);
                     //LOGGER.log(Level.FINEST, methodStr + ">Error: > El result.> " + result);
                 } else {
                     result = new JSONObject().accumulate("getLogin", "-1").accumulate("mensaje", "El usuario que esta solicitando no es válido.");

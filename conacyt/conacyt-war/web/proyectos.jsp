@@ -24,14 +24,14 @@
                 </div>
 
                 <div class="section">
-                    <h2 class="titles">getArchivo</h2>
+                    <h2 class="titles">obtenerProyectosPorClave</h2>
                     <div class="description">
                         Servicio para la Consulta de proyectos de la Dependencia Rol.
                     </div>
                     <h3 class="titles">Ejemplo:</h3>
                     <code class="example">
                         <div class="indent-1">
-                            resources/conacyt/proyectos/getProyectosByClave
+                            resources/conacyt/proyectos/obtenerProyectosPorClave
                         </div>
                         <br>
                         <div class="params indent-2">
@@ -81,175 +81,109 @@ json =
                         </div>
                     </code>
                     <h3 class="titles">Probar:</h3>
-                    <form class="forms" action="resources/conacyt/proyectos/getProyectosByClave" method="GET">
+                    <form class="forms" action="resources/conacyt/proyectos/obtenerProyectosPorClave" method="GET">
                         <input type="text" name="json" id="json" size="60" placeholder=" json">
                         <input type="submit" value="GET">
                     </form>
-                    <form class="forms" action="resources/conacyt/proyectos/getProyectosByClave" method="POST">
+                    <form class="forms" action="resources/conacyt/proyectos/obtenerProyectosPorClave" method="POST">
+                        <input type="text" name="json" id="json" size="60" placeholder=" json">
+                        <input type="submit" value="POST">
+                    </form>
+                </div> 
+                <div class="section">
+                    <h2 class="titles">insertarOactualizarProyecto</h2>
+                    <div class="description">
+                        Servicio para la operaciòn insert o update de proyectos CONACYT.
+                    </div>
+                    <h3 class="titles">Ejemplo:</h3>
+                    <code class="example">
+                        <div class="indent-1">
+                            resources/conacyt/proyectos/insertarOactualizarProyecto
+                        </div>
+                        <br>
+                        <div class="params indent-2">
+                            <pre>
+json =
+        {
+            "proyecto":
+                        {            
+                            "id_fondo": 201,
+                            "id_moneda": 194,
+                            "id_recurso": 189,
+                            "clave_proyecto": "101010",
+                            "nombre_proyecto": "Nombre del proyecto.",
+                            "id_cat_dependencia": 9,
+                            "id_cat_subdependencia": 12,
+                            "importe": 135,897,
+                            "fecha_inicio": "2018-01-17 16:14:56",
+                            "fecha_fin": "2019-01-17 16:14:56",
+                            "fecha_registro": now(),
+                            "fecha_actualizacion": now(),
+                            "estatus": 'Activo',
+                            "usuario_id":"eordaz"
+                        }
+            "documento":
+                        {
+                            "nombre_archivo": "Nombre_del_contrato.pdf",
+                            "ruta": "/Convenios/Recurso/Conacyt/Ejercicio/2018/211_01/CY101010/Contratos/",
+                            "serie": 189,
+                            "folio": "ABC2345",
+                            "rfc": "OAGE8706705",
+                            "importe": 135,897,
+                            "fecha_registro": now(),
+                            "fecha_actualizacion": now(),
+                            "estatus": 'Activo',
+                            "usuario_id":"eordaz"
+                        }    
+        }        
+                            </pre>
+                        </div>
+                        <br>
+                        <div class="indent-1">
+                            Parámetros:
+                        </div>
+                        <br>
+                        <div class="indent-2">
+                            <strong>proyecto</strong>:  parámetros que se requieren para la inserción de un proyecto CONACYT (obligatorio). <br>
+                            <strong>documento</strong>:  parámetros que se requieren para la inserción del documento que se integra en el proyecto CONACYT (obligatorio). <br>
+                        </div>
+                    </code>
+                    <h3 class="titles">Respuesta típica:</h3>
+                    <code class="code">
+                        <div class="response indent-1">
+                            <pre>
+                    Entrega el JSONArray, con el arreglo de los registros contenidos en el catálogo.
+                    En caso de ser true el campo "esComprobacion" la respuesta cambia.
+                    p.ej.: 
+                          "Insert or Update"
+json =                            
+        {
+            "proyecto":
+                        {            
+                            "id_proyecto": 189,
+                            "valor": True,
+                            "mensaje": "Su proyecto fue insertado/actualizado con éxito"
+                        }
+            "documento":
+                        {
+                            "id_proyecto": 179,
+                            "valor": True,
+                            "mensaje": "Su documento fue insertado/actualizado con éxito"
+                        }    
+        }                                           
+                            </pre>
+                        </div>
+                    </code>
+                    <h3 class="titles">Probar:</h3>
+                    <form class="forms" action="resources/conacyt/proyectos/insertarOactualizarProyecto" method="GET">
+                        <input type="text" name="json" id="json" size="60" placeholder=" json">
+                        <input type="submit" value="GET">
+                    </form>
+                    <form class="forms" action="resources/conacyt/proyectos/insertarOactualizarProyecto" method="POST">
                         <input type="text" name="json" id="json" size="60" placeholder=" json">
                         <input type="submit" value="POST">
                     </form>
                 </div>
-
-                <!--div class="section">
-                   <h2 class="titles">datoscsv</h2>
-                   <div class="description">
-                     Servicio encargado de generar un archivo CSV a partir de datos en formato JSON.
-                   </div>
-                   <h3 class="titles">Ejemplo:</h3>
-                   <code class="example">
-                     <div class="indent-1">
-                       resources/exportCSV/datoscsv
-                     </div>
-                     <br>
-                     <div class="params indent-2">
-                       <pre>
-         json =
-                 {
-                     "data": [
-                         ["h1", "h2"],
-                         [1, 2],
-                         ["algo,tóoodo", "otro"]
-                     ],
-                     "qualified": "true",
-                     "filename": "myCSV.csv"
-                 }
-                       </pre>
-                     </div>
-                     <br>
-                     <div class="indent-1">
-                       Parámetros:
-                     </div>
-                     <br>
-                     <div class="indent-2">
-                       <strong>data</strong>: arreglo bidimensional de datos. Los elementos deben de ser del mismo tamaño; se considerará  que el primer elemento contiene los encabezados y los siguientes a los valores (obligatorio). <br>              
-                     </div>
-                   </code>
-                   <h3 class="titles">Respuesta típica:</h3>
-                   <code class="code">
-                     <div class="response indent-1">
-                 Entrega el archivo csv
-                     </div>
-                   </code>
-                   <h3 class="titles">Probar:</h3>
-                   <form class="forms" action="resources/exportCSV/datoscsv" method="GET">
-                     <input type="text" name="json" id="json" size="60" placeholder=" json">
-                     <input type="submit" value="GET">
-                   </form>
-                   <form class="forms" action="resources/exportCSV/datoscsv" method="POST">
-                     <input type="text" name="json" id="json" size="60" placeholder=" json">
-                     <input type="submit" value="POST">
-                   </form>
-                 </div>   
-                 
-                <!--div class="section">
-                  <h2 class="titles">wscsv</h2>
-                  <div class="description">
-                    Servicio mediante el cual se genera un archivo CSV a partir de los datos (en formato JSON) entregados por un servicio web.
-                  </div>
-                  <h3 class="titles">Ejemplo:</h3>
-                  <code class="example">
-                    <div class="indent-1">
-                      resources/exportCSV/wscsv
-                    </div>
-                    <br>
-                    <div class="params indent-2">
-                      <pre>
-        json =
-                {
-                    "URL": "http://localhost:8080/CSV_WS_GF4-war/resources/JSONDataExample",
-                    "qualified": true,
-                    "filename": "myCSV"
-                }
-                      </pre>
-                    </div>
-                    <br>
-                    <div class="indent-1">
-                      Parámetros:
-                    </div>
-                    <br>
-                    <div class="indent-2">
-                      <strong>URL</strong>: URL del servicio web al que se hace referencia (Se creo uno de ejemplo y esta contenido en este proyecto) <br>
-                      <strong>qualified</strong>: indica si los valores en el CSV, deberán calificarse (entrecomillarse) siempre. <br>
-                      <strong>filename</strong>: nombre que será asignado al archivo CSV. <br>
-                    </div>
-                  </code>
-                  <h3 class="titles">Respuesta típica:</h3>
-                  <code class="code">
-                    <div class="response indent-1">
-                Entrega el archivo csv
-                    </div>
-                  </code>
-                  <h3 class="titles">Probar:</h3>
-                  <form class="forms" action="resources/exportCSV/wscsv" method="GET">
-                    <input type="text" name="json" id="json" size="60" placeholder=" json">
-                    <input type="submit" value="GET">
-                  </form>
-                  <form class="forms" action="resources/exportCSV/wscsv" method="POST">
-                    <input type="text" name="json" id="json" size="60" placeholder=" json">
-                    <input type="submit" value="POST">
-                  </form>
-                </div>  
-                
-               <div class="section">
-                  <h2 class="titles">dbcsv</h2>
-                  <div class="description">
-                    Servicio con el cual se genera un archivo CSV a partir de los datos (en formato JSON) entregados por una consulta a PostgreSQL.
-                    Existen invocaciones de tipo de datos distintos como: string, file y zip, además de poder indicar o no, un limite de registros a consultar.
-                  </div>
-                  <h3 class="titles">Ejemplo:</h3>
-                  <code class="example">
-                    <div class="indent-1">
-                      resources/exportCSV/dbcsv
-                    </div>
-                    <br>
-                    <div class="params indent-2">
-                      <pre>
-        json =
-                {
-                    "datasource": "jdbc/collections_curatorial",
-                    "schema": "public",
-                    "entity": "biodiversity",
-                    "fields": "lastmodified, specimen_id, \"occurrence_remarks\"",
-                    "conditions": "\"lastmodified\" >= \'1899-12-30\'",
-                    "qualified": "true",
-                    "filename": "biodiversity_dd-MM-aaaa",
-                    "kind": "zip",
-                    "limit": 30000,
-                    "key": "specimen_id"
-                }
-                      </pre>
-                    </div>
-                    <br>
-                    <div class="indent-1">
-                      Parámetros:
-                    </div>
-                    <br>
-                    <div class="indent-2">
-                      <strong>datasource</strong>: nombre del recurso JDBC para conectar a la base de datos (obligatorio). <br>
-                      <strong>entity</strong>: entidad (tabla o vista) sobre la que se ejecutará la consulta (obligatorio). <br>
-                      <strong>schema</strong>: esquema al que pertenece la entidad a consultar. Por default "public" (obligatorio). <br>
-                      <strong>key</strong>: indica mediante que campo de su tabla se ordenará la consulta realizada (obligatorio). <br>
-                      <strong>kind</strong>: define cual será el tipo para generar el archivo: string o file. (opcional). <br>
-                    </div>
-                  </code>
-                  <h3 class="titles">Respuesta típica:</h3>
-                  <code class="code">
-                    <div class="response indent-1">
-                Entrega el archivo, según el tipo(kind) definido: csv o zip
-                    </div>
-                  </code>
-                  <h3 class="titles">Probar:</h3>
-                  <form class="forms" action="resources/exportCSV/dbcsv" method="GET">
-                    <input type="text" name="json" id="json" size="60" placeholder=" json">
-                    <input type="submit" value="GET">
-                  </form>
-                  <form class="forms" action="resources/exportCSV/dbcsv" method="POST">
-                    <input type="text" name="json" id="json" size="60" placeholder=" json">
-                    <input type="submit" value="POST">
-                  </form>
-                </div-->   
-
             </div>
         </div>
     </body>
