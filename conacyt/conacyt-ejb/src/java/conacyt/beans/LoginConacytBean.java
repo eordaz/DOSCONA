@@ -72,11 +72,10 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
         Integer id_usuario = null;
 
         try {
-            if (params != null && !params.isEmpty() && !params.isNullObject() &&
-                    !params.getString("usuario").isEmpty() && !params.getString("pass").isEmpty()) {
-                
-                query_usuario = "SELECT " + conacyt_cfg.getString("column_id_usuario")
-                        + " FROM " + conacyt_cfg.getString("usuario")
+            if (params != null && !params.isEmpty() && !params.isNullObject()
+                    && !params.getString("usuario").isEmpty() && !params.getString("pass").isEmpty()) {
+
+                query_usuario = "SELECT * FROM " + conacyt_cfg.getString("usuario")
                         + " WHERE usuario = \'" + params.getString("usuario") + "\' AND password = \'" + params.getString("pass") + "\'";
                 //LOGGER.log(Level.FINEST, methodStr + ">Error: > El query_usuario.> " + query_usuario);
 
@@ -107,11 +106,24 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
     private JSONObject insertaOactualizaUsuario(JSONObject params) {
         String methodStr = className + "::insertaOactualizaUsuario";
         JSONObject result = null;
-        String query_usuario = null, query_usuario_rol = null;
-        Integer id_usuario = null;
+        String query_insert_usuario = null;
 //id_usuario, rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password, fecha_registro, fecha_actualizacion, estatus
         try {
-            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("rfc").isEmpty()) {
+            if (params != null && !params.isEmpty() && !params.isNullObject()
+                    && !params.getString("rfc").isEmpty() && !params.getString("clave_empleado").isEmpty()) {
+                //Se verifica si esiste el usuario
+                if (existeUsuario(params.getString("rfc"), params.getString("clave_empleado"))) {
+                    result = new JSONObject().accumulate("insertaOactualizaUsuario", "0").accumulate("mensaje", "El usuario que desea registrar ya fue registrado anteriormente.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El usuario que desea registrar ya fue registrado anteriormente.");
+                } else {
+//Se validan los campos requeridos para el registro del usuario.
+                    if (!params.getString("nombre").isEmpty() && !params.getString("apellido_p").isEmpty() && !params.getString("correo").isEmpty()
+                            && !params.getString("usuario").isEmpty() && !params.getString("password").isEmpty()) {
+
+                    } else {
+
+                    }
+                }
             } else {
                 result = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
@@ -119,6 +131,31 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
 
         } catch (Exception ex) {
             result = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+        }
+        return result;
+    }
+
+    private boolean existeUsuario(String rfc, String clave_empleado) {
+        String methodStr = className + "::existeUsuario";
+        boolean result = false;
+        String query_usuario = null;
+        Integer id_usuario = 0;
+        try {
+            if (!rfc.trim().isEmpty() && !clave_empleado.trim().isEmpty()) {
+                //Se verifica si esiste el usuario
+                query_usuario = "SELECT * FROM " + conacyt_cfg.getString("usuario")
+                        + " WHERE estatus = \'Activo\' AND rfc = \'" + rfc + "\' AND clave_empleado = \'" + clave_empleado + "\'";
+                id_usuario = recordManager.executeQueryToID(query_usuario, conacyt_cfg.getString("column_id_usuario"));
+                //LOGGER.log(Level.FINEST, methodStr + ">Error: > El id_usuario.> " + id_usuario);
+                if (id_usuario != null && id_usuario > 0) {
+                    result = true;
+                }
+            } else {
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+            }
+
+        } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
         return result;

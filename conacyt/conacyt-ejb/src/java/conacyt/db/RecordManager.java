@@ -74,7 +74,7 @@ public class RecordManager {
     }
 
     public JSONObject queryGetJSON(String query) {
-        String methodStr = className + "::queryGetLogin";
+        String methodStr = className + "::queryGetJSON";
         ResultSet rs = null;
         JSONObject result = new JSONObject();
         int count = 1;
@@ -86,26 +86,27 @@ public class RecordManager {
             ResultSetMetaData metadata = rs.getMetaData();
             int cols = metadata.getColumnCount();
 
-            LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
+            //LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
 
             //JSONObject json = new JSONObject();
             while (rs.next()) {
-            LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
+           // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
                 for (int i = 1; i < cols; i++) {
-            LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
+            //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
                     //JSONObject json_individual = new JSONObject();
                     result.put(metadata.getColumnName(i), rs.getObject(i));
-                    LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
+                   // LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
 
                     //LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result);
                     //result = JSONObject.fromObject(result);
                 }
                 //result.put(i, json);
             }
-            LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result final. " + result);
+            //LOGGER.log(Level.FINER, methodStr + ">Que hay en el json_result final. " + result);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
         } finally {
+            LOGGER.log(Level.FINEST, methodStr + ">Cerrando la conexión. " + result);
             cm.closeConnection();
         }
         return result;
@@ -179,9 +180,9 @@ public class RecordManager {
 
             while (rs.next()) {
                 Object next = rs.getObject(columnID);
-                LOGGER.log(Level.FINEST, methodStr + ">Que hay en el next. " + next);
+                //LOGGER.log(Level.FINEST, methodStr + ">Que hay en el next. " + next);
                 result = Integer.valueOf(next.toString());
-                LOGGER.log(Level.FINEST, methodStr + ">Que hay en el result del query. " + result);
+                //LOGGER.log(Level.FINEST, methodStr + ">Que hay en el result del query. " + result);
             }
             //   LOGGER.log(Level.INFO, methodStr + ">Que hay en el result_array. "+ result_array.size());
         } catch (Exception ex) {

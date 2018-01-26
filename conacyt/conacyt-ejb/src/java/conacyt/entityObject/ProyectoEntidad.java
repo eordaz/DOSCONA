@@ -113,8 +113,20 @@ public class ProyectoEntidad implements Serializable {
     public void setUsuario_id(int usuario_id) {
         this.usuario_id = usuario_id;
     }
-    
-    
+
+    public ProyectoEntidad parseFromJSONObjectToObject(JSONObject json) {
+        ProyectoEntidad pe = new ProyectoEntidad();
+        pe.setId_fondo(json.getInt("id_fondo"));
+        pe.setId_moneda(json.getInt("id_moneda"));
+        pe.setId_recurso(json.getInt("id_moneda"));
+        pe.setClave_proyecto(json.getString("clave_proyecto"));
+        pe.setNombre_proyecto(json.getString("nombre_proyecto"));
+        pe.setId_cat_dependencia(json.getInt("id_cat_dependencia"));
+        pe.setImporte(json.getDouble("importe"));
+        pe.setEstatus(json.getString("estatus"));
+        pe.setUsuario_id(json.getInt("usuario_id"));
+        return pe;
+    }
 
     @Override
     public int hashCode() {
@@ -140,39 +152,33 @@ public class ProyectoEntidad implements Serializable {
     public String toString() {
         return "conacyt.entityObject.ProyectosEntityObject[ id=" + this.id_fondo + " ]";
     }
-    
-    public static void main(String[] args) {
-            //h2 native query to show tables and columns
-             String  json= "{'id_fondo':'1','id_moneda':'1','id_recurso': 2,'clave_proyecto':'123456','nombre_proyecto':'prueba','id_cat_dependencia': 1,'importe': 12.2,'estatus':'Activo','usuario_id':2}"; 
-           
-           
-            
-            JSONArray array = new JSONArray();
-            array.add(json);
-            //Recorremos el Array
-            ProyectoEntidad p = new ProyectoEntidad();
-            for (int i = 0; i < array.size(); i++)
-            {
-                //Obtenermos los objetos de la posición i
-                JSONObject object = (JSONObject)array.get(i);
-          // System.out.println("Objeto  de Proyecto Entitty" + object.getInt("id_fondo"));
-                
-                p.setId_fondo(object.getInt("id_fondo"));
-                p.setId_moneda(object.getInt("id_moneda"));
-                p.setId_recurso(object.getInt("id_moneda"));
-                p.setClave_proyecto(object.getString("clave_proyecto"));
-                p.setNombre_proyecto(object.getString("nombre_proyecto"));
-                p.setId_cat_dependencia(object.getInt("id_cat_dependencia"));
-                p.setImporte(object.getDouble("importe"));
-                p.setEstatus(object.getString("estatus"));
-                p.setUsuario_id(object.getInt("usuario_id"));
-           
-            }
 
-           System.out.println("Objeto  de Proyecto Entitty" + p.toString());
-           
-           
-         
-            
-    } 
+    public static void main(String[] args) {
+        //h2 native query to show tables and columns
+        String json = "{'id_fondo':'1','id_moneda':'1','id_recurso': 2,'clave_proyecto':'123456','nombre_proyecto':'prueba','id_cat_dependencia': 1,'importe': 12.2,'estatus':'Activo','usuario_id':2}";
+
+        JSONArray array = new JSONArray();
+        array.add(json);
+        //Recorremos el Array
+        ProyectoEntidad p = new ProyectoEntidad();
+        for (int i = 0; i < array.size(); i++) {
+            //Obtenermos los objetos de la posición i
+            JSONObject object = (JSONObject) array.get(i);
+            // System.out.println("Objeto  de Proyecto Entitty" + object.getInt("id_fondo"));
+
+            p.setId_fondo(object.getInt("id_fondo"));
+            p.setId_moneda(object.getInt("id_moneda"));
+            p.setId_recurso(object.getInt("id_moneda"));
+            p.setClave_proyecto(object.getString("clave_proyecto"));
+            p.setNombre_proyecto(object.getString("nombre_proyecto"));
+            p.setId_cat_dependencia(object.getInt("id_cat_dependencia"));
+            p.setImporte(object.getDouble("importe"));
+            p.setEstatus(object.getString("estatus"));
+            p.setUsuario_id(object.getInt("usuario_id"));
+
+        }
+
+        System.out.println("Objeto  de Proyecto Entitty" + p.toString());
+
+    }
 }
