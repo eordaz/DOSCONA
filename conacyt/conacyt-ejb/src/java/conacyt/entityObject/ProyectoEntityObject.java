@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Entidad para la tabla Proyecto.
@@ -28,10 +30,10 @@ public class ProyectoEntityObject implements Serializable {
     private int id_fondo;
     private int id_moneda;
     private int id_recurso;
-    private int clave_proyecto;
+    private String clave_proyecto;
     private String nombre_proyecto;
     private int id_cat_dependencia;
-    private float importe;
+    private double importe;
     private String estatus;
     private int usuario_id;
 
@@ -67,11 +69,11 @@ public class ProyectoEntityObject implements Serializable {
         this.id_recurso = id_recurso;
     }
 
-    public int getClave_proyecto() {
+    public String getClave_proyecto() {
         return clave_proyecto;
     }
 
-    public void setClave_proyecto(int clave_proyecto) {
+    public void setClave_proyecto(String clave_proyecto) {
         this.clave_proyecto = clave_proyecto;
     }
 
@@ -91,11 +93,11 @@ public class ProyectoEntityObject implements Serializable {
         this.id_cat_dependencia = id_cat_dependencia;
     }
 
-    public float getImporte() {
+    public double getImporte() {
         return importe;
     }
 
-    public void setImporte(float importe) {
+    public void setImporte(double importe) {
         this.importe = importe;
     }
 
@@ -135,9 +137,45 @@ public class ProyectoEntityObject implements Serializable {
         return true;
     }
 
-    @Override
+   @Override
     public String toString() {
-        return "conacyt.beansObject.proyecto[ id=" + id + " ]";
+        return "conacyt.beansObject.proyecto[ id=" + this.clave_proyecto + " ]";
     }
+    
+    
+    public static void main(String[] args) {
+            //h2 native query to show tables and columns
+             String  json= "{'id_fondo':'1','id_moneda':'1','id_recurso': 2,'clave_proyecto':'123456','nombre_proyecto':'prueba','id_cat_dependencia': 1,'importe': 12.2,'estatus':'Activo','usuario_id':2}"; 
+           
+           
+            
+            JSONArray array = new JSONArray();
+            array.add(json);
+            //Recorremos el Array
+            ProyectoEntityObject p = new ProyectoEntityObject();
+            for (int i = 0; i < array.size(); i++)
+            {
+                //Obtenermos los objetos de la posición i
+                JSONObject object = (JSONObject)array.get(i);
+          // System.out.println("Objeto  de Proyecto Entitty" + object.getInt("id_fondo"));
+                
+                p.setId_fondo(object.getInt("id_fondo"));
+                p.setId_moneda(object.getInt("id_moneda"));
+                p.setId_recurso(object.getInt("id_moneda"));
+                p.setClave_proyecto(object.getString("clave_proyecto"));
+                p.setNombre_proyecto(object.getString("nombre_proyecto"));
+                p.setId_cat_dependencia(object.getInt("id_cat_dependencia"));
+                p.setImporte(object.getDouble("importe"));
+                p.setEstatus(object.getString("estatus"));
+                p.setUsuario_id(object.getInt("usuario_id"));
+           
+            }
+
+           System.out.println("Objeto  de Proyecto Entitty" + p.toString());
+           
+           
+         
+            
+    } 
 }
 
