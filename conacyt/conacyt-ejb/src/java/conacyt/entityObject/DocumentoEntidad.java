@@ -19,7 +19,7 @@ import javax.persistence.Id;
  * @author vsanchez
  */
 @Entity
-public class DocumentosEntityObject implements Serializable {
+public class DocumentoEntidad implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -31,7 +31,7 @@ public class DocumentosEntityObject implements Serializable {
     private String serie;
     private String folio;
     private String rfc;
-    private float importe;
+    private double importe;
     private Date fecha_actualizacion;
     private String estatus;
     private int usuario_id;
@@ -92,11 +92,11 @@ public class DocumentosEntityObject implements Serializable {
         this.rfc = rfc;
     }
 
-    public float getImporte() {
+    public double getImporte() {
         return importe;
     }
 
-    public void setImporte(float importe) {
+    public void setImporte(double importe) {
         this.importe = importe;
     }
 
@@ -134,10 +134,10 @@ public class DocumentosEntityObject implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof DocumentosEntityObject)) {
+        if (!(object instanceof DocumentoEntidad)) {
             return false;
         }
-        DocumentosEntityObject other = (DocumentosEntityObject) object;
+        DocumentoEntidad other = (DocumentoEntidad) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
