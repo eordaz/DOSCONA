@@ -7,6 +7,9 @@
 package conacyt.beans;
 
 import conacyt.db.RecordManager;
+import conacyt.entityObject.UsuarioEntidad;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +29,8 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
     private static final String className = "LoginConacytBean";
     private static final Logger LOGGER = Logger.getLogger("LoginConacytBean");
     private static final ResourceBundle conacyt_cfg = ResourceBundle.getBundle("conacyt_cfg");
+
+    SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
     RecordManager recordManager = null;
 
     public LoginConacytBean() {
@@ -106,22 +111,56 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
     private JSONObject insertaOactualizaUsuario(JSONObject params) {
         String methodStr = className + "::insertaOactualizaUsuario";
         JSONObject result = null;
-        String query_insert_usuario = null;
-//id_usuario, rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password, fecha_registro, fecha_actualizacion, estatus
+        String query_insert_usuario = null, query_update_usuario = null, apellido_m = null, telefono = null, password = null;
+        Date fecha_registro = new Date();
+        int respuesta_ins = 0;
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
                     && !params.getString("rfc").isEmpty() && !params.getString("clave_empleado").isEmpty()) {
                 //Se verifica si esiste el usuario
                 if (existeUsuario(params.getString("rfc"), params.getString("clave_empleado"))) {
-                    result = new JSONObject().accumulate("insertaOactualizaUsuario", "0").accumulate("mensaje", "El usuario que desea registrar ya fue registrado anteriormente.");
-                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El usuario que desea registrar ya fue registrado anteriormente.");
+                    if (!params.getString("nombre").isEmpty() || !params.getString("apellido_p").isEmpty() || !params.getString("apellido_m").isEmpty() || !params.getString("correo").isEmpty()
+                            || !params.getString("usuario").isEmpty() || !params.getString("password").isEmpty() || !params.getString("telefono").isEmpty()) {
+                        
+                        query_update_usuario = "UPDATE Usuario SET ";
+                        query_update_usuario += !params.getString("rfc").isEmpty() ? "rfc=\'" + params.getString("rfc") + "\'," : "";
+                        query_update_usuario += !params.getString("nombre").isEmpty() ? "nombre=\'" + params.getString("nombre") + "\'," : "";
+                        query_update_usuario += !params.getString("apellido_p").isEmpty() ? "apellido_p=\'" + params.getString("apellido_p") + "\'," : "";
+                        query_update_usuario += !params.getString("apellido_m").isEmpty() ? "apellido_m=\'" + params.getString("apellido_m") + "\'," : "";
+                        query_update_usuario += !params.getString("clave_empleado").isEmpty() ? "clave_empleado=\'" + params.getString("clave_empleado") + "\'," : "";
+                        query_update_usuario += !params.getString("correo").isEmpty() ? "correo=\'" + params.getString("correo") + "\'," : "";
+                        query_update_usuario += !params.getString("telefono").isEmpty() ? "telefono=\'" + params.getString("telefono") + "\'," : "";
+                        query_update_usuario += !params.getString("usuario").isEmpty() ? "usuario=\'" + params.getString("usuario") + "\'," : "";
+                        query_update_usuario += !params.getString("password").isEmpty() ? "password=\'" + params.getString("password") + "\'," : "";
+                        query_update_usuario += "\'" + FORMAT_DATE.format(fecha_registro) + "\'," + "estatus=\'Activo'";
+
+                        LOGGER.log(Level.WARNING, methodStr + ">Error: > query_update_usuario." + query_update_usuario);
+                        //result = new JSONObject().accumulate("insertaOactualizaUsuario", "0").accumulate("mensaje", "El usuario que desea registrar ya fue registrado anteriormente.");
+                        //LOGGER.log(Level.WARNING, methodStr + ">Error: > El usuario que desea registrar ya fue registrado anteriormente.");
+                    } else {
+                        result = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "Los parámetros que envía para la actualización estàn incompletos.");
+                        LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía para el registro estàn incompletos.");
+                    }
                 } else {
 //Se validan los campos requeridos para el registro del usuario.
                     if (!params.getString("nombre").isEmpty() && !params.getString("apellido_p").isEmpty() && !params.getString("correo").isEmpty()
                             && !params.getString("usuario").isEmpty() && !params.getString("password").isEmpty()) {
+                        apellido_m = !params.getString("apellido_m").isEmpty() ? params.getString("apellido_m") : "";
+                        telefono = !params.getString("telefono").isEmpty() ? params.getString("telefono") : "";
+                        password = !params.getString("password").isEmpty() ? params.getString("password") : "";
+                        //llenarEntidad(params);
+//                        query_insert_usuario = "INSERT INTO Usuarios(rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password) VALUES(\'" + params.getString("rfc") + "\',\'" + params.getString("nombre") + "\',\'" + params.getString("apellido_p") + "\',"
+//                                + "\'" + apellido_m + "\',\'" + params.getString("clave_empleado") + "\',\'" + params.getString("correo") + "\',\'" + telefono + "\',\'" + params.getString("usuario") + "\',\'"
+//                                + password + "\')";
+                        query_insert_usuario = "INSERT INTO Usuarios(rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password) VALUES(?,?,?,?,?,?,?,?,?)";
 
+                        LOGGER.log(Level.WARNING, methodStr + ">: > query_insert_usuario." + query_insert_usuario);
+                        respuesta_ins = recordManager.executeQueryInsertUsuario(query_insert_usuario,llenarEntidad(params));
+                        LOGGER.log(Level.WARNING, methodStr + ">: > respuesta_ins." + respuesta_ins);
+                        
                     } else {
-
+                        result = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "Los parámetros que envía para el registro estàn incompletos.");
+                        LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía para el registro estàn incompletos.");
                     }
                 }
             } else {
@@ -134,6 +173,14 @@ public class LoginConacytBean implements LoginConacytBeanLocal {
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
         return result;
+    }
+
+    private UsuarioEntidad llenarEntidad(JSONObject params) {
+        String methodStr = className + "::llenarEntidad";
+        UsuarioEntidad entidad = new UsuarioEntidad();
+
+        return entidad.parseFromJSONObjectToObject(params);
+
     }
 
     private boolean existeUsuario(String rfc, String clave_empleado) {

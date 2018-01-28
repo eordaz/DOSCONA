@@ -5,6 +5,8 @@
  */
 package conacyt.utils;
 
+import conacyt.entityObject.ProyectoEntidad;
+import conacyt.entityObject.UsuarioEntidad;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,20 +48,6 @@ public class Utilerias {
             LOGGER.log(Level.SEVERE, methodStr + ">Error: " + e);
         }
         return nombreProyecto;
-    }
-    
-    public static Object parseFromJSONtoObject(JSONObject json_orig) {
-        String methodStr = className + "::parseFromJSONtoObject";
-        JSONObject json_param = new JSONObject();
-        Object objetoEntidad = new Object();
-        
-        try {
-            
-            //LOGGER.log(Level.INFO, methodStr + ">nombreProyecto: " + nombreProyecto);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, methodStr + ">Error: " + e);
-        }
-        return objetoEntidad;
     }            
     
     public static Object parseFromJSONArraytoObject(JSONArray array_orig) {
@@ -67,12 +55,32 @@ public class Utilerias {
         JSONArray array_param = new JSONArray();
         Object objetoEntidad = new Object();
         
-        try {
-            
-            //LOGGER.log(Level.INFO, methodStr + ">nombreProyecto: " + nombreProyecto);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, methodStr + ">Error: " + e);
-        }
+//        try {
+            //Recorremos el Array
+           
+//            for (int i = 0; i < array_orig.size(); i++)
+//            {
+                //Obtenermos los objetos de la posición i
+//                JSONObject object = (JSONObject)array.get(i);
+          // System.out.println("Objeto  de Proyecto Entitty" + object.getInt("id_fondo"));
+                
+//                p.setId_fondo(object.getInt("id_fondo"));
+//                p.setId_moneda(object.getInt("id_moneda"));
+//                p.setId_recurso(object.getInt("id_moneda"));
+//                p.setClave_proyecto(object.getString("clave_proyecto"));
+//                p.setNombre_proyecto(object.getString("nombre_proyecto"));
+//                p.setId_cat_dependencia(object.getInt("id_cat_dependencia"));
+//                p.setImporte(object.getDouble("importe"));
+//                p.setEstatus(object.getString("estatus"));
+//                p.setUsuario_id(object.getInt("usuario_id"));
+           
+//            }
+//
+//           System.out.println("Objeto  de Proyecto Entitty" + p.toString());
+//            //LOGGER.log(Level.INFO, methodStr + ">nombreProyecto: " + nombreProyecto);
+//        } catch (Exception e) {
+//            LOGGER.log(Level.SEVERE, methodStr + ">Error: " + e);
+//        }
         return objetoEntidad;
     }            
 

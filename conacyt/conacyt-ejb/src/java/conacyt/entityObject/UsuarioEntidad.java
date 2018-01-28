@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.*;
+import net.sf.json.JSONObject;
 
 /**
  *
@@ -133,6 +134,22 @@ public class UsuarioEntidad implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    
+     public UsuarioEntidad parseFromJSONObjectToObject(JSONObject json) {
+        UsuarioEntidad ue = new UsuarioEntidad();
+        ue.setRfc(json.getString("rfc"));
+        ue.setNombre(json.getString("nombre"));
+        ue.setApellido_p(json.getString("apellido_p"));
+        ue.setApellido_m(json.getString("apellido_m"));
+        ue.setClave_empleado(json.getString("clave_empleado"));
+        ue.setCorreo(json.getString("correo"));
+        ue.setTelefono(json.getString("telefono"));
+        ue.setUsuario(json.getString("usuario"));
+        ue.setPassword(json.getString("password"));
+        
+        return ue;
+    }
+
 
     @Override
     public int hashCode() {
@@ -156,7 +173,7 @@ public class UsuarioEntidad implements Serializable {
 
     @Override
     public String toString() {
-        return "conacyt.entityObject.UsuarioEntidad[ id=" + id + " ]";
+        return "conacyt.entityObject.UsuarioEntidad[ id=" + id + ", rfc="+rfc+" ]";
     }
     
 }

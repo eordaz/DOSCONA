@@ -71,28 +71,31 @@ json =
           </form>
         </div>
 
-       <!--div class="section">
-          <h2 class="titles">datoscsv</h2>
+       <div class="section">
+          <h2 class="titles">insertaOactualizaUsuario</h2>
           <div class="description">
-            Servicio encargado de generar un archivo CSV a partir de datos en formato JSON.
+            Servicio encargado de insertar o actualizar el registro del usuario sobre la base de datos.
           </div>
           <h3 class="titles">Ejemplo:</h3>
           <code class="example">
             <div class="indent-1">
-              resources/exportCSV/datoscsv
+              resources/conacyt/login/insertaOactualizaUsuario
             </div>
             <br>
             <div class="params indent-2">
-              <pre>
+              <pre> 
 json =
         {
-            "data": [
-                ["h1", "h2"],
-                [1, 2],
-                ["algo,tóoodo", "otro"]
-            ],
-            "qualified": "true",
-            "filename": "myCSV.csv"
+            "rfc": "OAGE810407",
+            "clave_empleado": "859088",
+            "nombre": "Edy",
+            "apellido_p": "Segura",
+            "apellido_m": "Torreblanca",
+            "correo": "edi@correo.com.mx",
+            "telefono": "56438556",
+            "usuario": "edy55",
+            "password": "159753"
+            
         }
               </pre>
             </div>
@@ -102,27 +105,33 @@ json =
             </div>
             <br>
             <div class="indent-2">
-              <strong>data</strong>: arreglo bidimensional de datos. Los elementos deben de ser del mismo tamaño; se considerará  que el primer elemento contiene los encabezados y los siguientes a los valores (obligatorio). <br>              
+              <strong>rfc</strong>: rfc del usuario (obligatorio). <br>              
+              <strong>clave_empleado</strong>: clave empleado del usuario (obligatorio). <br>              
             </div>
           </code>
           <h3 class="titles">Respuesta típica:</h3>
           <code class="code">
             <div class="response indent-1">
-        Entrega el archivo csv
+json =
+        {
+            "campo": "valor",
+            "campo": "valor",
+            
+        }
             </div>
           </code>
           <h3 class="titles">Probar:</h3>
-          <form class="forms" action="resources/exportCSV/datoscsv" method="GET">
+          <form class="forms" action="resources/conacyt/login/insertaOactualizaUsuario" method="GET">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="GET">
           </form>
-          <form class="forms" action="resources/exportCSV/datoscsv" method="POST">
+          <form class="forms" action="resources/conacyt/login/insertaOactualizaUsuario" method="POST">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="POST">
           </form>
         </div>   
         
-        <div class="section">
+        <!--div class="section">
           <h2 class="titles">wscsv</h2>
           <div class="description">
             Servicio mediante el cual se genera un archivo CSV a partir de los datos (en formato JSON) entregados por un servicio web.

@@ -6,11 +6,13 @@
  */
 package conacyt.db;
 
+import conacyt.entityObject.UsuarioEntidad;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -87,15 +89,14 @@ public class RecordManager {
             int cols = metadata.getColumnCount();
 
             //LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
-
             //JSONObject json = new JSONObject();
             while (rs.next()) {
-           // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
+                // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
                 for (int i = 1; i < cols; i++) {
-            //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
+                    //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
                     //JSONObject json_individual = new JSONObject();
                     result.put(metadata.getColumnName(i), rs.getObject(i));
-                   // LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
+                    // LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
 
                     //LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result);
                     //result = JSONObject.fromObject(result);
@@ -138,7 +139,7 @@ public class RecordManager {
                         json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
                         json_individual.put(metadata.getColumnName(i + 3), rs.getObject(3));
                         json_individual.put(metadata.getColumnName(i + 4), rs.getString(4));
-                    //json_result = JSONObject.fromObject(json_individual);
+                        //json_result = JSONObject.fromObject(json_individual);
                     } else {
                         json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
                         json_individual.put(metadata.getColumnName(i + 4), rs.getObject(4));
@@ -204,6 +205,7 @@ public class RecordManager {
         int resultadoIUpd;
 
         try {
+            getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query);
             resultadoIUpd = pstmt.executeUpdate();
             if (resultadoIUpd > 0) {
@@ -226,5 +228,57 @@ public class RecordManager {
             cm.closeConnection();
         }
         return resultadoIUpd;
+    }
+
+    /**
+     *
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    public int executeQueryInsertUsuario(String query, UsuarioEntidad entidad) throws Exception {
+        String methodStr = className + "::executeQueryInsert";
+        int resultadoIIns = 0;
+        try {
+            getConnection();
+            LOGGER.log(Level.INFO, methodStr + ">entidad." +entidad.toString());
+            LOGGER.log(Level.INFO, methodStr + ">entroooooo." +query);
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, entidad.getRfc());
+            pstmt.setString(2, entidad.getNombre());
+            pstmt.setString(3, entidad.getApellido_p());
+            pstmt.setString(4, entidad.getApellido_m());
+            pstmt.setString(5, entidad.getClave_empleado());
+            pstmt.setString(6, entidad.getCorreo());
+            pstmt.setString(7, entidad.getTelefono());
+            pstmt.setString(8, entidad.getUsuario());
+            pstmt.setString(9, entidad.getPassword());//TODOAquí es todo se encripta
+            
+            LOGGER.log(Level.INFO, methodStr + ">pase pstmt.");
+            resultadoIIns = pstmt.executeUpdate();
+            LOGGER.log(Level.INFO, methodStr + ">Se inserto el registro con exito." + resultadoIIns);
+
+//            while (rs.next()) {
+//                //Object next = rs.getObject(columnID);
+//                LOGGER.log(Level.FINEST, methodStr + ">Que hay en el next. " + rs.next());
+//                //result = Integer.valueOf(next.toString());
+//                //LOGGER.log(Level.FINEST, methodStr + ">Que hay en el result del query. " + result);
+//            }
+       // } 
+//        catch (Exception sqlE) {
+//            LOGGER.log(Level.SEVERE, methodStr + ">Ocurrio un error al ejecutar el query: " + query, sqlE);
+//            try {
+//                cm.conn.rollback();
+//            } catch (SQLException sqlEroll) {
+//                LOGGER.log(Level.SEVERE, methodStr + ">Ocurrio un error al realizar rollback." + sqlEroll);
+//                throw new SQLException("Error al realizar rollback: " + sqlEroll);
+//            }
+//            throw new SQLException("Error al ejecutar query: " + sqlE + "\n query: " + query);
+        } catch (Exception namE) {
+            throw new SQLException("No se pudo ejecutar el query: " + namE);
+        } finally {
+            cm.closeConnection();
+        }
+        return resultadoIIns;
     }
 }
