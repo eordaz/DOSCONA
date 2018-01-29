@@ -7,6 +7,7 @@ package conacyt.beans;
 
 import conacyt.db.RecordManager;
 import conacyt.utils.Utilerias;
+import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,8 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
     private static final String className = "ProyectosConacytBean";
     private static final Logger LOGGER = Logger.getLogger("ProyectosConacytBean");
     private static final ResourceBundle conacyt_cfg = ResourceBundle.getBundle("conacyt_cfg");
+    
+    SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-mm-dd");
     RecordManager recordManager = null;
 
     // Add business logic below. (Right-click in editor and choose
@@ -68,8 +71,8 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
     private JSONArray obtenerProyectosPorClave(JSONObject params) {
         String methodStr = className + "::obtenerProyectosPorClave";
         JSONObject result_json = null, nombre_proyecto = null, json_docs = null,
-                json_etapas_proyecto = null, result_resp = null, json_tmp = new JSONObject();
-        JSONArray result = new JSONArray();
+                  json_tmp = new JSONObject();
+        JSONArray result = new JSONArray(),json_etapas_proyecto = null,result_resp = null;
         boolean esComprobacion = false;
         String query_proyecto = null, query_docs_proy = null, query_doc = null, query_etapas_proy = null, query_responsables_proy = null;
         String clave_proyecto = null, clave_recurso = null;
@@ -114,14 +117,15 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                             query_etapas_proy = "SELECT * FROM " + conacyt_cfg.getString("v_etapas_proyecto")
                                     + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
 
-                            json_etapas_proyecto = recordManager.queryGetJSONwithArray(query_etapas_proy);
+                            LOGGER.log(Level.FINER, methodStr + ">Error: > El query_etapas_proy ." + query_etapas_proy);
+                            json_etapas_proyecto = recordManager.queryGetJSONFromJSON(query_etapas_proy);
 
                             if (json_etapas_proyecto != null && !json_etapas_proyecto.isEmpty()) {
                                 json_tmp.put("etapas_proyecto", (Object) json_etapas_proyecto);
                                 //LOGGER.log(Level.FINER, methodStr + ">Error: > El json_tmp ." + json_tmp);
                                 query_responsables_proy = "SELECT * FROM " + conacyt_cfg.getString("v_responsables_proyecto")
                                         + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
-                                result_resp = recordManager.queryGetJSONResponsables(query_responsables_proy);
+                                result_resp = recordManager.queryGetJSONFromJSON(query_responsables_proy);
                                 if (query_responsables_proy != null && !query_responsables_proy.isEmpty()) {
                                     json_tmp.put("responsables", (Object) result_resp);
                                     result.add(json_tmp);
@@ -195,7 +199,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     jsonExisteProyecto.accumulate("clave_proyecto", clave_proyecto);
                     if (Utilerias.existeRegistro(conacyt_cfg.getString("v_proyectos"), conacyt_cfg.getString("column_id_proyecto"), jsonExisteProyecto)) {
                         LOGGER.log(Level.WARNING, methodStr + ">Existe proyecto: > TRUE.");
-                        query_upsert_proyecto = "UPDATE Usuarios SET ";
+                        query_upsert_proyecto = "UPDATE Proyecto SET ";
                         query_upsert_proyecto += json_datosGrales.containsKey("id_fondo") && json_datosGrales.getInt("id_fondo") > 0 ? "id_fondo=?," : "";
                         query_upsert_proyecto += json_datosGrales.containsKey("id_moneda") && json_datosGrales.getInt("id_moneda") > 0 ? "id_moneda=?," : "";
                         query_upsert_proyecto += json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? "id_recurso=?," : "";
@@ -217,7 +221,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         }
 
                         LOGGER.log(Level.WARNING, methodStr + ">: > valor del json_datosGrales." + json_datosGrales);
-                        query_upsert_proyecto = "INSERT INTO Usuarios(rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password) VALUES(?,?,?,?,?,?,?,?,?)";
+                        query_upsert_proyecto = "INSERT INTO Proyecto(id_fondo, id_moneda, id_recurso, clave_proyecto, nombre_proyecto, id_cat_dependencia, id_cat_subdependencia, importe_total, usuario) VALUES(?,?,?,?,?,?,?,?,?)";
 
                         LOGGER.log(Level.WARNING, methodStr + ">: > query_insert_usuario." + query_upsert_proyecto);
 

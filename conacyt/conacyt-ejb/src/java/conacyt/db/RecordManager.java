@@ -101,7 +101,7 @@ public class RecordManager {
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
         } finally {
-            LOGGER.log(Level.FINEST, methodStr + ">Cerrando la conexión. " + result);
+            LOGGER.log(Level.INFO, methodStr + ">Cerrando la conexión. " + result);
             cm.closeConnection();
         }
         return result;
@@ -110,7 +110,7 @@ public class RecordManager {
     public JSONObject queryGetJSONResponsables(String query) {
         String methodStr = className + "::queryGetJSONResponsables";
         ResultSet rs = null;
-        JSONObject result = new JSONObject(), result_json = new JSONObject();
+        JSONObject result = null, result_json = new JSONObject();
         int count = 1;
         try {
             getConnection();
@@ -124,35 +124,37 @@ public class RecordManager {
             //JSONObject json = new JSONObject();
             while (rs.next()) {
                 // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
+                result = new JSONObject();
                 for (int i = 1; i < cols; i++) {
                     //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
                     result.put(metadata.getColumnName(i), rs.getObject(i));
                     //LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
                 }
-                if (!result.getString("descripcion").isEmpty()) {
-                    result_json.put(result.getString("descripcion"), result);
-                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
-                } else {
-                    result_json.put("responsable_" + count, result);
-                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
-                    count++;
-                }
+             
+//                if (!result.getString("descripcion").isEmpty()) {
+//                    result_json.put(result.getString("descripcion"), result);
+//                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
+//                } else {
+//                    result_json.put("responsable_" + count, result);
+//                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
+//                    count++;
+//                }
             }
             //LOGGER.log(Level.FINER, methodStr + ">Que hay en el json_result final. " + result);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
         } finally {
-            LOGGER.log(Level.FINEST, methodStr + ">Cerrando la conexión. " + result);
+            LOGGER.log(Level.INFO, methodStr + ">Cerrando la conexión. " + result);
             cm.closeConnection();
         }
-        return result_json;
+        return result;
     }
 
-    public JSONObject queryGetJSONwithArray(String query) {
-        String methodStr = className + "::queryGetJSONArray";
+    public JSONArray queryGetJSONFromJSON(String query) {
+        String methodStr = className + "::queryGetJSONFromJSON";
         ResultSet rs = null;
-        JSONObject json = new JSONObject(), result = new JSONObject();
-        JSONArray etapa = new JSONArray();
+        JSONObject json = null;
+        JSONArray result = new JSONArray();
         int count = 1;
         try {
             getConnection();
@@ -164,21 +166,21 @@ public class RecordManager {
 
             while (rs.next()) {
                 // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
-                for (int i = 1; i < cols; i++) {
+                    json = new JSONObject();
+                for (int i = 1; i < cols + 1; i++) {
                     //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
                     json.put(metadata.getColumnName(i), rs.getObject(i));
                     // LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
                 }
-                etapa.add(json);
-                result.put("etapa_" + count, etapa);
-                LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_tmp. " + result);
-                count++;
+                result.add(json);
+                //result.put("etapa_" + count, etapa);
+                LOGGER.log(Level.INFO, methodStr + ">Que hay en el result. " + result);
+               // count++;
             }
-            LOGGER.log(Level.FINER, methodStr + ">Que hay en el result final. " + result);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
         } finally {
-            LOGGER.log(Level.FINEST, methodStr + ">Cerrando la conexión. " + result);
+            LOGGER.log(Level.INFO, methodStr + ">Cerrando la conexión. ");
             cm.closeConnection();
         }
         return result;
