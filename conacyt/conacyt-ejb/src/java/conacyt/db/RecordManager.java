@@ -80,6 +80,37 @@ public class RecordManager {
         String methodStr = className + "::queryGetJSON";
         ResultSet rs = null;
         JSONObject result = new JSONObject();
+        try {
+            getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            //LOGGER.log(Level.FINER, methodStr + ">resultados: " + resultados);
+            ResultSetMetaData metadata = rs.getMetaData();
+            int cols = metadata.getColumnCount();
+
+            //LOGGER.log(Level.INFO, methodStr + ">Que hay en cols. " + cols);
+            //JSONObject json = new JSONObject();
+            while (rs.next()) {
+                // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
+                for (int i = 1; i < cols; i++) {
+                    //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
+                    result.put(metadata.getColumnName(i), rs.getObject(i));
+                }
+            }
+            //LOGGER.log(Level.FINER, methodStr + ">Que hay en el json_result final. " + result);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
+        } finally {
+            LOGGER.log(Level.FINEST, methodStr + ">Cerrando la conexión. " + result);
+            cm.closeConnection();
+        }
+        return result;
+    }
+
+    public JSONObject queryGetJSONResponsables(String query) {
+        String methodStr = className + "::queryGetJSONResponsables";
+        ResultSet rs = null;
+        JSONObject result = new JSONObject(), result_json = new JSONObject();
         int count = 1;
         try {
             getConnection();
@@ -95,16 +126,55 @@ public class RecordManager {
                 // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
                 for (int i = 1; i < cols; i++) {
                     //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
-                    //JSONObject json_individual = new JSONObject();
                     result.put(metadata.getColumnName(i), rs.getObject(i));
-                    // LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
-
-                    //LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result);
-                    //result = JSONObject.fromObject(result);
+                    //LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
                 }
-                //result.put(i, json);
+                if (!result.getString("descripcion").isEmpty()) {
+                    result_json.put(result.getString("descripcion"), result);
+                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
+                } else {
+                    result_json.put("responsable_" + count, result);
+                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
+                    count++;
+                }
             }
             //LOGGER.log(Level.FINER, methodStr + ">Que hay en el json_result final. " + result);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
+        } finally {
+            LOGGER.log(Level.FINEST, methodStr + ">Cerrando la conexión. " + result);
+            cm.closeConnection();
+        }
+        return result_json;
+    }
+
+    public JSONObject queryGetJSONwithArray(String query) {
+        String methodStr = className + "::queryGetJSONArray";
+        ResultSet rs = null;
+        JSONObject json = new JSONObject(), result = new JSONObject();
+        JSONArray etapa = new JSONArray();
+        int count = 1;
+        try {
+            getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            //LOGGER.log(Level.FINER, methodStr + ">resultados: " + resultados);
+            ResultSetMetaData metadata = rs.getMetaData();
+            int cols = metadata.getColumnCount();
+
+            while (rs.next()) {
+                // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
+                for (int i = 1; i < cols; i++) {
+                    //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
+                    json.put(metadata.getColumnName(i), rs.getObject(i));
+                    // LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
+                }
+                etapa.add(json);
+                result.put("etapa_" + count, etapa);
+                LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_tmp. " + result);
+                count++;
+            }
+            LOGGER.log(Level.FINER, methodStr + ">Que hay en el result final. " + result);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
         } finally {
@@ -237,7 +307,7 @@ public class RecordManager {
      * @return
      * @throws Exception
      */
-    public int executeQueryUpsert(String query,JSONObject json) throws Exception {
+    public int executeQueryUpsert(String query, JSONObject json) throws Exception {
         String methodStr = className + "::executeQueryInsert";
         int resultadoIIns = 0;
         try {
@@ -256,7 +326,7 @@ public class RecordManager {
                     } else {
                         //LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) json.get(next));
                         pstmt.setString(i, (String) json.get(next));
-                    }                   
+                    }
                 }
             }
 

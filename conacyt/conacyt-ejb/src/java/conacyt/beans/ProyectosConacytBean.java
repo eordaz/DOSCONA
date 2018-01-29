@@ -67,10 +67,11 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
      */
     private JSONArray obtenerProyectosPorClave(JSONObject params) {
         String methodStr = className + "::obtenerProyectosPorClave";
-        JSONObject result_json = null, nombre_proyecto = null, json_docs = null;
+        JSONObject result_json = null, nombre_proyecto = null, json_docs = null,
+                json_etapas_proyecto = null, result_resp = null, json_tmp = new JSONObject();
         JSONArray result = new JSONArray();
         boolean esComprobacion = false;
-        String query_proyecto = null, query_docs_proy = null, query_doc = null;
+        String query_proyecto = null, query_docs_proy = null, query_doc = null, query_etapas_proy = null, query_responsables_proy = null;
         String clave_proyecto = null, clave_recurso = null;
         Integer id_docs_proyecto = null;
 
@@ -86,19 +87,19 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     query_proyecto = "SELECT " + conacyt_cfg.getString("campos_comprobacion")
                             + " FROM " + conacyt_cfg.getString("v_proyectos") + " WHERE estatus = \'Activo\' "
                             + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
-                    LOGGER.log(Level.WARNING, methodStr + ">query_comprobacion: > " + query_proyecto);
+                    //LOGGER.log(Level.WARNING, methodStr + ">query_comprobacion: > " + query_proyecto);
                 } else {
                     query_proyecto = "SELECT " + conacyt_cfg.getString("campos_proyecto")
                             + " FROM " + conacyt_cfg.getString("v_proyectos") + " WHERE estatus = \'Activo\' "
                             + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
-                    LOGGER.log(Level.WARNING, methodStr + ">query_proyecto: > " + query_proyecto);
+                   // LOGGER.log(Level.FINER, methodStr + ">query_proyecto: > " + query_proyecto);
                 }
-
                 result_json = recordManager.queryGetJSON(query_proyecto);
                 //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
                 if (result_json != null && !result_json.isEmpty() && result_json.getInt("id_proyecto") > 0) {
-                    //result = JSONArray.fromObject(result_json);
-                    result.add(result_json);
+                    json_tmp.put("datosGenerales", (Object) result_json);
+                   // LOGGER.log(Level.FINER, methodStr + ">json_tmp: > " + json_tmp);
+                    //result.add(json_tmp);
                     query_docs_proy = "SELECT * FROM " + conacyt_cfg.getString("documentos_proyecto")
                             + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
 
@@ -107,32 +108,61 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         query_doc = "SELECT * FROM " + conacyt_cfg.getString("documentos")
                                 + " WHERE " + conacyt_cfg.getString("column_documentos") + " = " + id_docs_proyecto;
                         json_docs = recordManager.queryGetJSON(query_doc);
-                        if (json_docs != null) {
-                            //result = JSONArray.fromObject(json_docs);
-                            result.add(json_docs);
+                        if (json_docs != null && !json_docs.isEmpty()) {
+                            json_tmp.put("documentos", (Object) json_docs);
+                            //result.add(json_tmp);
+                            query_etapas_proy = "SELECT * FROM " + conacyt_cfg.getString("v_etapas_proyecto")
+                                    + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
+
+                            json_etapas_proyecto = recordManager.queryGetJSONwithArray(query_etapas_proy);
+
+                            if (json_etapas_proyecto != null && !json_etapas_proyecto.isEmpty()) {
+                                json_tmp.put("etapas_proyecto", (Object) json_etapas_proyecto);
+                                //LOGGER.log(Level.FINER, methodStr + ">Error: > El json_tmp ." + json_tmp);
+                                query_responsables_proy = "SELECT * FROM " + conacyt_cfg.getString("v_responsables_proyecto")
+                                        + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
+                                result_resp = recordManager.queryGetJSONResponsables(query_responsables_proy);
+                                if (query_responsables_proy != null && !query_responsables_proy.isEmpty()) {
+                                    json_tmp.put("responsables", (Object) result_resp);
+                                    result.add(json_tmp);
+                                } else {
+                                    result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "El proyecto solicitado no tiene responsables asociados.");
+                                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene responsables asociados.");
+                                    result.add(result_json);
+                                }
+                            } else {
+                                result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "El proyecto solicitado no tiene etapas asociadas.");
+                                LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene etapas asociadas.");
+                                result.add(result_json);
+                            }
                         } else {
                             result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "El proyecto solicitado no tiene un documento asociado.");
                             LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene un documento asociado.");
+                            result.add(result_json);
                         }
 
                     } else {
                         result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "El identificador que esta solicitando no es válido.");
                         LOGGER.log(Level.WARNING, methodStr + ">Error: > El usuario que esta solicitando no es válido.");
+                        result.add(result_json);
                     }
                 } else {
                     result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", " Ocurrió un error al realizar la consulta del proyecto requerido.");
                     LOGGER.log(Level.WARNING, methodStr + ">Error: > Ocurrió un error al realizar la consulta del proyecto requerido.");
+                    result.add(result_json);
                 }
                 //result = new JSONObject().accumulate("getProyectos", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
             } else {
                 result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
                 LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+                result.add(result_json);
             }
         } catch (Exception ex) {
             result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+            result.add(result_json);
         }
-        LOGGER.log(Level.SEVERE, methodStr + "result: >" + result);
+        //LOGGER.log(Level.FINER, methodStr + "result: >" + result);
         //result = JSONArray.fromObject(result_json).fromObject(json_docs);
         return result;
     }
