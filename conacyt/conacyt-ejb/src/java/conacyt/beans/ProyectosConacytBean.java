@@ -25,7 +25,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
     private static final String className = "ProyectosConacytBean";
     private static final Logger LOGGER = Logger.getLogger("ProyectosConacytBean");
     private static final ResourceBundle conacyt_cfg = ResourceBundle.getBundle("conacyt_cfg");
-    
+
     SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-mm-dd");
     RecordManager recordManager = null;
 
@@ -71,37 +71,33 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
     private JSONArray obtenerProyectosPorClave(JSONObject params) {
         String methodStr = className + "::obtenerProyectosPorClave";
         JSONObject result_json = null, nombre_proyecto = null, json_docs = null,
-                  json_tmp = new JSONObject();
-        JSONArray result = new JSONArray(),json_etapas_proyecto = null,result_resp = null;
+                json_tmp = new JSONObject();
+        JSONArray result = new JSONArray(), json_etapas_proyecto = null, result_resp = null;
         boolean esComprobacion = false;
         String query_proyecto = null, query_docs_proy = null, query_doc = null, query_etapas_proy = null, query_responsables_proy = null;
-        String clave_proyecto = null, clave_recurso = null;
+        String clave_proyecto = null, clave_recurso = null, campos_select = new String();
         Integer id_docs_proyecto = null;
 
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
-                    && !params.getString("clave_proyecto").isEmpty()) {
-                nombre_proyecto = Utilerias.separaNombreProyecto(params.getString("clave_proyecto"));
-                clave_recurso = "\'" + (String) nombre_proyecto.get("clave_recurso") + "\'";
-                clave_proyecto = "\'" + (String) nombre_proyecto.get("clave_proyecto") + "\'";
+                    && params.getInt("id_recurso") > 0 && !params.getString("clave_proyecto").isEmpty()) {
+
                 esComprobacion = params.containsKey("esComprobacion") ? params.getBoolean("esComprobacion") : esComprobacion;
                 /*Verifica que exista el recurso en la tabla */
                 if (esComprobacion) {
-                    query_proyecto = "SELECT " + conacyt_cfg.getString("campos_comprobacion")
-                            + " FROM " + conacyt_cfg.getString("v_proyectos") + " WHERE estatus = \'Activo\' "
-                            + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
+                    campos_select = conacyt_cfg.getString("campos_comprobacion");
                     //LOGGER.log(Level.WARNING, methodStr + ">query_comprobacion: > " + query_proyecto);
                 } else {
-                    query_proyecto = "SELECT " + conacyt_cfg.getString("campos_proyecto")
-                            + " FROM " + conacyt_cfg.getString("v_proyectos") + " WHERE estatus = \'Activo\' "
-                            + "AND clave_recurso = " + clave_recurso + " AND clave_proyecto = " + clave_proyecto;
-                   // LOGGER.log(Level.FINER, methodStr + ">query_proyecto: > " + query_proyecto);
+                    campos_select = conacyt_cfg.getString("campos_proyecto");
+                    // LOGGER.log(Level.FINER, methodStr + ">query_proyecto: > " + query_proyecto);
                 }
+                query_proyecto = "SELECT " + campos_select + " FROM " + conacyt_cfg.getString("v_proyectos")
+                        + " WHERE estatus = \'Activo\' " + "AND id_recurso = " + params.getInt("id_recurso") + " AND clave_proyecto = " + params.getString("clave_proyecto");
                 result_json = recordManager.queryGetJSON(query_proyecto);
                 //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
                 if (result_json != null && !result_json.isEmpty() && result_json.getInt("id_proyecto") > 0) {
                     json_tmp.put("datosGenerales", (Object) result_json);
-                   // LOGGER.log(Level.FINER, methodStr + ">json_tmp: > " + json_tmp);
+                    // LOGGER.log(Level.FINER, methodStr + ">json_tmp: > " + json_tmp);
                     //result.add(json_tmp);
                     query_docs_proy = "SELECT * FROM " + conacyt_cfg.getString("documentos_proyecto")
                             + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
@@ -180,7 +176,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         String query_upsert_proyecto = null;
         String clave_proyecto = null, clave_recurso = null;
         Integer id_proyecto = null;
-        int respuesta_upsert = 0;
+        int respuesta_upsert = 0, id_recurso=0;
         //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
@@ -192,10 +188,10 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     JSONObject json_datosGrales = JSONObject.fromObject(json.getString("datosGenerales"));
 
                     LOGGER.log(Level.WARNING, methodStr + ">json_datosGrales.>" + json_datosGrales);
-                    clave_recurso = (String) json_datosGrales.get("clave_recurso");
-                    clave_proyecto = (String) json_datosGrales.get("clave_proyecto");
+                    id_recurso = json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? (int) json_datosGrales.get("id_recurso"): 0;
+                    clave_proyecto = json_datosGrales.containsKey("clave_proyecto") && !json_datosGrales.getString("clave_proyecto").isEmpty() ? (String) json_datosGrales.get("clave_proyecto"): "";
 
-                    jsonExisteProyecto.accumulate("clave_recurso", clave_recurso);
+                    jsonExisteProyecto.accumulate("id_recurso", id_recurso);
                     jsonExisteProyecto.accumulate("clave_proyecto", clave_proyecto);
                     if (Utilerias.existeRegistro(conacyt_cfg.getString("v_proyectos"), conacyt_cfg.getString("column_id_proyecto"), jsonExisteProyecto)) {
                         LOGGER.log(Level.WARNING, methodStr + ">Existe proyecto: > TRUE.");
@@ -221,13 +217,13 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         }
 
                         LOGGER.log(Level.WARNING, methodStr + ">: > valor del json_datosGrales." + json_datosGrales);
-                        query_upsert_proyecto = "INSERT INTO Proyecto(id_fondo, id_moneda, id_recurso, clave_proyecto, nombre_proyecto, id_cat_dependencia, id_cat_subdependencia, importe_total, usuario) VALUES(?,?,?,?,?,?,?,?,?)";
+                        query_upsert_proyecto = "INSERT INTO Proyecto(id_fondo, id_moneda, id_recurso, clave_proyecto, nombre_proyecto, id_cat_dependencia, id_cat_subdependencia, importe_total,fecha_inicio,fecha_fin, usuario) VALUES(?,?,?,?,?,?,?,?,?)";
 
                         LOGGER.log(Level.WARNING, methodStr + ">: > query_insert_usuario." + query_upsert_proyecto);
 
                     }
-                    //respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_proyecto, json_datosGrales);
-                    //LOGGER.log(Level.WARNING, methodStr + ">: > respuesta_ins." + respuesta_ins);
+                    respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_proyecto, json_datosGrales);
+                    LOGGER.log(Level.WARNING, methodStr + ">: > respuesta_ins." + respuesta_upsert);
                     if (respuesta_upsert > 0) {
                         result_json = new JSONObject().accumulate("insertaOactualizaUsuario", "1").accumulate("mensaje", "Se inserto usuario con éxito.");
                         LOGGER.log(Level.WARNING, methodStr + ">Error: > Se inserto usuario con éxito.");
@@ -236,12 +232,12 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         LOGGER.log(Level.WARNING, methodStr + ">Error: > No se inserto el usuario con éxito.");
                     }
                 } else {
-                    result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Los parámetros que envía son nulos, vacíos o están incompletos.");
-                    LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos, vacíos o están incompletos.");
+                    result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene los datos generales esta vacío.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene los datos generales esta vacío.");
                 }
             } else {
-                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene los datos generales esta vacío.");
-                LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene los datos generales esta vacío.");
+                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Los parámetros que envía son nulos, vacíos o están incompletos.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos, vacíos o están incompletos.");
             }
         } catch (Exception ex) {
             result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);

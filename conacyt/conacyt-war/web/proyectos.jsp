@@ -38,7 +38,8 @@
                             <pre>
 json =
         {
-            "clave_proyecto": "CY101010",
+            "id_recurso":189,
+            "clave_proyecto": "101010",
             "esComprobacion": false
         } 
                             </pre>
@@ -62,7 +63,7 @@ json =
                           "EsComprobacion":false
                             
 json =
-        { 
+        {             
             "clave_proyecto":"101010",
             "clave_recurso":"CY", 
             "estatus":"Activo",...
@@ -107,95 +108,89 @@ json =
            {
 
              "datosGenerales":{
-                                "clave_recurso":'CY',
+                                "id_fondo":201,
+                                "id_moneda":192,
+                                "id_recurso":189,
                                 "clave_proyecto":'101010',
                                 "nombre_proyecto":'JOHONS CORPORATIONS',
-                                "id_fondo":201,
-                                "fecha_inicio":date,
-                                "fecha_fin":date,
-                                "importe_total":99256452.22,
-                                "id_moneda":192,
                                 "id_dependencia":10,
                                 "id_subdependencia":14,
+                                "importe_total":"99256452.22",
+                                "fecha_inicio":"2018-01-29 00\\:00\\:01",
+                                "fecha_fin":"2018-01-30 23//:59//:59",
                                 "id_usuario":1
                               },
-             "etapasProyecto":{
-                                     "etapa_1": [
-                                                    {
-                                                     "clave_etapa":1,
-                                                     "id_recurso":189,                                                                                                                                        
-                                                     "id_cat_tipo_gasto":184,
-                                                     "importe_asignado":12565.23,
-                                                     "importe_autorizado":12565.23,
-                                                     "id_usuario":1                                                                                                                                           
-                                                    },
-                                                    {
-                                                     "clave_etapa":,
-                                                     "id_recurso":189,                                                                                                                                        
-                                                     "id_cat_tipo_gasto":186,
-                                                     "importe_asignado":25368.56,
-                                                     "importe_autorizado":25368.56,
-                                                     "id_usuario":1
-                                                    }
-                                                ],
-                                     "etapa_2":[
-                                                    {
-                                                     "clave_etapa":2,
-                                                     "id_recurso":189,                                                                                                                                        
-                                                     "id_cat_tipo_gasto":186,
-                                                     "importe_asignado":204894.56,
-                                                     "importe_autorizado":204894.56,
-                                                     "id_usuario"
-                                                     }
-                                                ],
-                                     "etapa_3":[
-                                                    {
-                                                     "clave_etapa":3,
-                                                     "id_recurso":189,                                                                                                                                        
-                                                     "id_cat_tipo_gasto":184,
-                                                     "importe_asignado":453344.98,
-                                                     "importe_autorizado":453344.98,
-                                                     "id_usuario":1
-                                                     }
-                                                ]                    
-                              },
+             "etapasProyecto":[
+                                    {
+                                     "clave_etapa":1,
+                                     "id_recurso":189,                                                                                                                                        
+                                     "id_cat_tipo_gasto":184,
+                                     "importe_asignado":"12565.23",
+                                     "importe_autorizado":"12565.23",
+                                     "id_usuario":1                                                                                                                                           
+                                    },
+                                    {
+                                     "clave_etapa":1,
+                                     "id_recurso":189,                                                                                                                                        
+                                     "id_cat_tipo_gasto":186,
+                                     "importe_asignado":"25368.56",
+                                     "importe_autorizado":"25368.56",
+                                     "id_usuario":1
+                                    },
+                                    {
+                                     "clave_etapa":2,
+                                     "id_recurso":189,                                                                                                                                        
+                                     "id_cat_tipo_gasto":186,
+                                     "importe_asignado":"204894.56",
+                                     "importe_autorizado":"204894.56",
+                                     "id_usuario":1
+                                     },
+                                    {
+                                     "clave_etapa":3,
+                                     "id_recurso":189,                                                                                                                                        
+                                     "id_cat_tipo_gasto":184,
+                                     "importe_asignado":"453344.98",
+                                     "importe_autorizado":"453344.98",
+                                     "id_usuario":1
+                                     }                  
+                              ],
              "responsables":{
-                                "responsable_administrativo": {
-                                                                "rfc":'SACV760201GK3',
-                                                                "nombre":'VALERIA',
-                                                                "apellido_paterno":'SANDOVAL',
-                                                                "apellido_materno":'RAMIREZ',
-                                                                "clave_empleado":'125874',
-                                                                "correo":'',
-                                                                "telefono":'',                                                                                                                                  
-                                                                "id_usuario":1
-                                                               },
-                                "responsable_tecnico": {
-                                                        "rfc":'SACV760201GK3',,
-                                                        "nombre":'VALERIA',
-                                                        "apellido_paterno":'SANDOVAL',
-                                                        "apellido_materno":'125874',
-                                                        "clave_empleado":'',
-                                                        "correo":'',
-                                                        "telefono":'',                                                                                                                                  
-                                                        "id_usuario":1
-                                                        },
-                                "responsable_legal":{
-                                                     "rfc":,
-                                                     "nombre":,
-                                                     "apellido_paterno":,
-                                                     "apellido_materno":,
-                                                     "clave_empleado":,
-                                                     "correo":,
-                                                     "telefono":,                                                                                                                                    
-                                                     "id_usuario":
-                                                    }
+                                {
+                                    "rfc":'SACV760201GK3',
+                                    "nombre":'VALERIA',
+                                    "apellido_paterno":'SANDOVAL',
+                                    "apellido_materno":'RAMIREZ',
+                                    "clave_empleado":'125874',
+                                    "correo":'correo@unam.mx',
+                                    "telefono":'12332233',                                                                                                                                  
+                                    "id_usuario":1
+                                },
+                                {
+                                    "rfc":'SACV760201GK3',
+                                    "nombre":'VALERIA',
+                                    "apellido_paterno":'SANDOVAL',
+                                    "apellido_materno":'125874',
+                                    "clave_empleado":'rt54443',
+                                    "correo":'correo2@gmail.com',
+                                    "telefono":'56438556',                                                                                                                                  
+                                    "id_usuario":1
+                                },
+                                {
+                                    "rfc":"OAGE810407",
+                                    "nombre":"Edith",
+                                    "apellido_paterno":"Ordaz",
+                                    "apellido_materno":"Garnica",
+                                    "clave_empleado":"dr54567",
+                                    "correo":"edith@hotmail.com",
+                                    "telefono":"5528490741",                                                                                                                                    
+                                    "id_usuario":1
+                                }
                             },
              "documentos":{
                            "documento":{
                                         "id_documento":250,
                                         "nombre_archivo":'contrato211_01_2018.pdf',
-                                        "ruta":/contratos/,
+                                        "ruta":"/contratos/",
                                         "id_usuario":1
                                        }             
                           }
