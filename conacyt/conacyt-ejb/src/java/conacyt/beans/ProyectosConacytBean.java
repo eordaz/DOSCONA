@@ -132,27 +132,82 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
             result_json = new JSONObject().accumulate("obtenerProyectosPorClave", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
-            LOGGER.log(Level.SEVERE, methodStr + "result: >"+result);
+        LOGGER.log(Level.SEVERE, methodStr + "result: >" + result);
         //result = JSONArray.fromObject(result_json).fromObject(json_docs);
         return result;
     }
 
     private JSONArray insertarOactualizarProyecto(JSONObject params) {
         String methodStr = className + "::insertarOactualizarProyecto";
-        JSONObject result_json = null, nombre_proyecto = null;
+        JSONObject result_json = null, nombre_proyecto = null,
+                jsonExisteProyecto = new JSONObject();
         JSONArray result = null;
         boolean esComprobacion = false;
-        String query_proyecto = null;
+        String query_upsert_proyecto = null;
         String clave_proyecto = null, clave_recurso = null;
         Integer id_proyecto = null;
-
+        int respuesta_upsert = 0;
+        //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
-                    && !params.getString("clave_proyecto").isEmpty()) {
+                    && params.containsKey("datosGenerales") && params.containsKey("etapasProyecto")
+                    && params.containsKey("responsables") && params.containsKey("documentos")) {
+                JSONObject json = JSONObject.fromObject(params);
+                LOGGER.log(Level.WARNING, methodStr + ">json.>" + json);
+                if (!json.getString("datosGenerales").isEmpty()) {
+                    JSONObject json_datosGrales = JSONObject.fromObject(json.getString("datosGenerales"));
 
+                    LOGGER.log(Level.WARNING, methodStr + ">json_datosGrales.>" + json_datosGrales);
+                    clave_recurso = (String) json_datosGrales.get("clave_recurso");
+                    clave_proyecto = (String) json_datosGrales.get("clave_proyecto");
+
+                    jsonExisteProyecto.accumulate("clave_recurso", clave_recurso);
+                    jsonExisteProyecto.accumulate("clave_proyecto", clave_proyecto);
+                    if (Utilerias.existeRegistro(conacyt_cfg.getString("v_proyectos"), conacyt_cfg.getString("column_id_proyecto"), jsonExisteProyecto)) {
+                        LOGGER.log(Level.WARNING, methodStr + ">Existe proyecto: > TRUE.");
+                        query_upsert_proyecto = "UPDATE Usuarios SET ";
+                        query_upsert_proyecto += json_datosGrales.containsKey("id_fondo") && json_datosGrales.getInt("id_fondo") > 0 ? "id_fondo=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("id_moneda") && json_datosGrales.getInt("id_moneda") > 0 ? "id_moneda=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? "id_recurso=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("clave_proyecto") && !json_datosGrales.getString("clave_proyecto").isEmpty() ? "clave_proyecto=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("nombre_proyecto") && !json_datosGrales.getString("nombre_proyecto").isEmpty() ? "nombre_proyecto=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("id_dependencia") && json_datosGrales.getInt("id_dependencia") > 0 ? "id_cat_dependencia=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("id_subdependencia") && json_datosGrales.getInt("id_subdependencia") > 0 ? "id_cat_subdependencia=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("importe_total") && !json_datosGrales.getString("importe_total").isEmpty() ? "importe_total=?," : "";
+                        query_upsert_proyecto += json_datosGrales.containsKey("usuario") && !json_datosGrales.getString("usuario").isEmpty() ? "usuario=?," : "";
+                        query_upsert_proyecto = query_upsert_proyecto.substring(0, query_upsert_proyecto.length() - 1);
+                        query_upsert_proyecto += " WHERE id_proyecto=" + (json_datosGrales.containsKey("id_proyecto") && json_datosGrales.getInt("id_proyecto") > 0 ? "?" : 0);
+                        LOGGER.log(Level.WARNING, methodStr + ">: > query_update_usuario." + query_upsert_proyecto);
+
+//                    respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_proyecto, json_datosGrales);
+                    } else {
+//Se validan los campos requeridos para el registro del proyecto.
+                        if (json_datosGrales.containsKey("id_proyecto")) {
+                            json_datosGrales.remove("id_proyecto");
+                        }
+
+                        LOGGER.log(Level.WARNING, methodStr + ">: > valor del json_datosGrales." + json_datosGrales);
+                        query_upsert_proyecto = "INSERT INTO Usuarios(rfc, nombre, apellido_p, apellido_m, clave_empleado, correo, telefono, usuario, password) VALUES(?,?,?,?,?,?,?,?,?)";
+
+                        LOGGER.log(Level.WARNING, methodStr + ">: > query_insert_usuario." + query_upsert_proyecto);
+
+                    }
+                    //respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_proyecto, json_datosGrales);
+                    //LOGGER.log(Level.WARNING, methodStr + ">: > respuesta_ins." + respuesta_ins);
+                    if (respuesta_upsert > 0) {
+                        result_json = new JSONObject().accumulate("insertaOactualizaUsuario", "1").accumulate("mensaje", "Se inserto usuario con éxito.");
+                        LOGGER.log(Level.WARNING, methodStr + ">Error: > Se inserto usuario con éxito.");
+                    } else {
+                        result_json = new JSONObject().accumulate("insertaOactualizaUsuario", "-1").accumulate("mensaje", "No se inserto el usuario con éxito.");
+                        LOGGER.log(Level.WARNING, methodStr + ">Error: > No se inserto el usuario con éxito.");
+                    }
+                } else {
+                    result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Los parámetros que envía son nulos, vacíos o están incompletos.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos, vacíos o están incompletos.");
+                }
             } else {
-                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
-                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene los datos generales esta vacío.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene los datos generales esta vacío.");
             }
         } catch (Exception ex) {
             result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);

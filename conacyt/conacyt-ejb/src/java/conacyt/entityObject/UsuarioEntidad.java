@@ -24,18 +24,18 @@ public class UsuarioEntidad implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    	
-	private String rfc;
-	private String nombre;
-	private String apellido_p;
-	private String apellido_m; 
-	private String clave_empleado;
-	private String correo;
-	private String telefono;
-	private String usuario;
-	private String password;
-	private Date fecha_actualizacion;
-	private String estatus;
+
+    private String rfc;
+    private String nombre;
+    private String apellido_p;
+    private String apellido_m;
+    private String clave_empleado;
+    private String correo;
+    private String telefono;
+    private String usuario;
+    private String password;
+    private Date fecha_actualizacion;
+    private String estatus;
 
     public String getRfc() {
         return rfc;
@@ -124,8 +124,6 @@ public class UsuarioEntidad implements Serializable {
     public void setEstatus(String estatus) {
         this.estatus = estatus;
     }
-	
-        
 
     public Long getId() {
         return id;
@@ -134,22 +132,38 @@ public class UsuarioEntidad implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-     public UsuarioEntidad parseFromJSONObjectToObject(JSONObject json) {
+
+    public UsuarioEntidad parseFromJSONObjectToObject(JSONObject json) {
         UsuarioEntidad ue = new UsuarioEntidad();
-        ue.setRfc(json.getString("rfc"));
-        ue.setNombre(json.getString("nombre"));
-        ue.setApellido_p(json.getString("apellido_p"));
-        ue.setApellido_m(json.getString("apellido_m"));
-        ue.setClave_empleado(json.getString("clave_empleado"));
-        ue.setCorreo(json.getString("correo"));
-        ue.setTelefono(json.getString("telefono"));
-        ue.setUsuario(json.getString("usuario"));
-        ue.setPassword(json.getString("password"));
-        
+        for (Iterator iterator = json.keys(); iterator.hasNext();) {
+            Object next = iterator.next();
+            if (next.equals("id_usuario")) {
+                ue.setId(json.getLong("id_usuario"));
+            } else if (next.equals("rfc")) {
+                ue.setRfc(json.getString("rfc"));
+            } else if (next.equals("nombre")) {
+                ue.setNombre(json.getString("nombre"));
+            } else if (next.equals("apellido_p")) {
+                ue.setApellido_p(json.getString("apellido_p"));
+            } else if (next.equals("apellido_m")) {
+                ue.setApellido_m(json.getString("apellido_m"));
+            } else if (next.equals("clave_empleado")) {
+                ue.setClave_empleado(json.getString("clave_empleado"));
+            } else if (next.equals("correo")) {
+                ue.setCorreo(json.getString("correo"));
+            } else if (next.equals("telefono")) {
+                ue.setTelefono(json.getString("telefono"));
+            } else if (next.equals("usuario")) {
+                ue.setUsuario(json.getString("usuario"));
+            } else if (next.equals("password")) {
+                ue.setPassword(json.getString("password"));
+            }
+        }
+
         return ue;
     }
-
+    
+   
 
     @Override
     public int hashCode() {
@@ -173,7 +187,7 @@ public class UsuarioEntidad implements Serializable {
 
     @Override
     public String toString() {
-        return "conacyt.entityObject.UsuarioEntidad[ id=" + id + ", rfc="+rfc+" ]";
+        return "conacyt.entityObject.UsuarioEntidad[ id=" + id + ", rfc=" + rfc + " ]";
     }
-    
+
 }

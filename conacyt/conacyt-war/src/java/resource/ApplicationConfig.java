@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(resource.CargaArchivosConacytResource.class);
         resources.add(resource.CatalogosConacytResources.class);
+        resources.add(resource.ConacytUsuariosResource.class);
         resources.add(resource.LoginConacytResource.class);
         resources.add(resource.ProyectosConacytResource.class);
     }

@@ -11,7 +11,8 @@
 <div id="menu">
   <a href="index.jsp">Inicio</a>  
   <a href="login.jsp">Login CONACYT</a>
+  <a href="usuarios.jsp">Usuarios CONACYT</a>
   <a href="catalogos.jsp">Catálogos CONACYT</a>
-  <a href="carga.jsp">Carga de Archivos CONACYT</a>
   <a href="proyectos.jsp">Proyectos CONACYT</a>
+  <a href="carga.jsp">Carga de Archivos CONACYT</a>
 </div>

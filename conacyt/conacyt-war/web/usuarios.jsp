@@ -25,32 +25,35 @@
         </div>
 
         <div class="section">
-          <h2 class="titles">getLogin</h2>
+          <h2 class="titles">getUsuario</h2>
           <div class="description">
-            Servicio mediante el cual se realizá el login.
+            Servicio mediante el cual se obtiene la informaciòn del usuario.
           </div>
           <h3 class="titles">Ejemplo:</h3>
           <code class="example">
             <div class="indent-1">
-              resources/conacyt/login/getLogin
+              resources/conacyt/usuarios/getUsuario
             </div>
             <br>
             <div class="params indent-2">
               <pre>
 json =
         {
-            "usuario": "usuario_pruebas" , "pass":"1q2w3e4r"           
+            "rfc": "ADSE810515" ,
+            "usuario": "usuario_pruebas" ,
+            "clave_empleado":"1q2w3e4r"           
         } 
               </pre>
             </div>
             <br>
             <div class="indent-1">
-              Parámetros:
+              Parámetros de los cuales debe existir al mnos uno de ellos para filtrar la búsqueda:
             </div>
             <br>
             <div class="indent-2">
+              <strong>rfc</strong>:  rfc del usuario (obligatorio). <br>
               <strong>usuario</strong>:  Nombre del usuario (obligatorio). <br>
-              <strong>pass</strong>:  Password del usuario (obligatorio). <br>
+              <strong>clave_empleado</strong>:  clave de empleado del usuario (obligatorio). <br>
             </div>
           </code>
           <h3 class="titles">Respuesta típica:</h3>
@@ -59,17 +62,89 @@ json =
         Entrega el JSON, con el arreglo delos registros contenidos en el catálogo.
 json =
         {
-            "result_login": true,
-            "rol": 2
+            "id_usuario":1008,
+            "rfc": "UNAM817615",
+            "nombre": "Agallón"
+            "apellido_p": "Mafafas"
+            "apellido_m": "López"
+            "clave_empleado": 256544
+            "correo": "correo@unam.mx"
+            "telefono": "12345678"
+            "usuario": "amafafa"
         } 
             </div>
           </code>
           <h3 class="titles">Probar:</h3>          
-          <form class="forms" action="resources/conacyt/login/getLogin" method="POST">
+          <form class="forms" action="resources/conacyt/usuarios/getUsuario" method="GET">
+            <input type="text" name="json" id="json" size="60" placeholder=" json">
+            <input type="submit" value="GET">
+          </form>
+          <form class="forms" action="resources/conacyt/usuarios/getUsuario" method="POST">
             <input type="text" name="json" id="json" size="60" placeholder=" json">
             <input type="submit" value="POST">
           </form>
-        </div>      
+        </div>
+
+       <div class="section">
+          <h2 class="titles">insertaOactualizaUsuario</h2>
+          <div class="description">
+            Servicio encargado de insertar o actualizar el registro del usuario sobre la base de datos.
+          </div>
+          <h3 class="titles">Ejemplo (Los parámetros deben ir exactamente como se indica en el json, ya que el orden altera el query y causa errores. El id_usuario solo es requerido en el update):</h3>
+          <code class="example">
+            <div class="indent-1">
+              resources/conacyt/usuarios/insertaOactualizaUsuario
+            </div>
+            <br>
+            <div class="params indent-2">
+              <pre> 
+json =
+        {
+            "id_usuario":1008,
+            "rfc": "OAGE810407",
+            "nombre": "Edy",
+            "apellido_p": "Segura",
+            "apellido_m": "Torreblanca",
+            "clave_empleado": "859088",
+            "correo": "edi@correo.com.mx",
+            "telefono": "56438556",
+            "usuario": "edy55",
+            "password": "159753"
+            
+        }
+              </pre>
+            </div>
+            <br>
+            <div class="indent-1">
+              Parámetros:
+            </div>
+            <br>
+            <div class="indent-2">
+              <strong>rfc</strong>: rfc del usuario (obligatorio). <br>              
+              <strong>clave_empleado</strong>: clave empleado del usuario (obligatorio). <br>              
+            </div>
+          </code>
+          <h3 class="titles">Respuesta típica:</h3>
+          <code class="code">
+            <div class="response indent-1">
+json =
+        {
+            "campo": "valor",
+            "campo": "valor",
+            
+        }
+            </div>
+          </code>
+          <h3 class="titles">Probar:</h3>
+          <form class="forms" action="resources/conacyt/usuarios/insertaOactualizaUsuario" method="GET">
+            <input type="text" name="json" id="json" size="60" placeholder=" json">
+            <input type="submit" value="GET">
+          </form>
+          <form class="forms" action="resources/conacyt/usuarios/insertaOactualizaUsuario" method="POST">
+            <input type="text" name="json" id="json" size="60" placeholder=" json">
+            <input type="submit" value="POST">
+          </form>
+        </div>   
         
         <!--div class="section">
           <h2 class="titles">wscsv</h2>

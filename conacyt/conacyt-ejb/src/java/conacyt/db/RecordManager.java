@@ -14,6 +14,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -236,44 +237,30 @@ public class RecordManager {
      * @return
      * @throws Exception
      */
-    public int executeQueryInsertUsuario(String query, UsuarioEntidad entidad) throws Exception {
+    public int executeQueryUpsert(String query,JSONObject json) throws Exception {
         String methodStr = className + "::executeQueryInsert";
         int resultadoIIns = 0;
         try {
             getConnection();
-            LOGGER.log(Level.INFO, methodStr + ">entidad." +entidad.toString());
-            LOGGER.log(Level.INFO, methodStr + ">entroooooo." +query);
+            //LOGGER.log(Level.INFO, methodStr + ">entidad." + entidad.toString());
+            //LOGGER.log(Level.INFO, methodStr + ">entroooooo." + query);
+            //LOGGER.log(Level.INFO, methodStr + ">json size." + json.size());
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, entidad.getRfc());
-            pstmt.setString(2, entidad.getNombre());
-            pstmt.setString(3, entidad.getApellido_p());
-            pstmt.setString(4, entidad.getApellido_m());
-            pstmt.setString(5, entidad.getClave_empleado());
-            pstmt.setString(6, entidad.getCorreo());
-            pstmt.setString(7, entidad.getTelefono());
-            pstmt.setString(8, entidad.getUsuario());
-            pstmt.setString(9, entidad.getPassword());//TODOAquí es todo se encripta
-            
-            LOGGER.log(Level.INFO, methodStr + ">pase pstmt.");
-            resultadoIIns = pstmt.executeUpdate();
-            LOGGER.log(Level.INFO, methodStr + ">Se inserto el registro con exito." + resultadoIIns);
 
-//            while (rs.next()) {
-//                //Object next = rs.getObject(columnID);
-//                LOGGER.log(Level.FINEST, methodStr + ">Que hay en el next. " + rs.next());
-//                //result = Integer.valueOf(next.toString());
-//                //LOGGER.log(Level.FINEST, methodStr + ">Que hay en el result del query. " + result);
-//            }
-       // } 
-//        catch (Exception sqlE) {
-//            LOGGER.log(Level.SEVERE, methodStr + ">Ocurrio un error al ejecutar el query: " + query, sqlE);
-//            try {
-//                cm.conn.rollback();
-//            } catch (SQLException sqlEroll) {
-//                LOGGER.log(Level.SEVERE, methodStr + ">Ocurrio un error al realizar rollback." + sqlEroll);
-//                throw new SQLException("Error al realizar rollback: " + sqlEroll);
-//            }
-//            throw new SQLException("Error al ejecutar query: " + sqlE + "\n query: " + query);
+            for (Iterator iterator = json.keys(); iterator.hasNext();) {
+                for (int i = 1; i <= json.size(); i++) {
+                    String next = (String) iterator.next();
+                    if (next.toString().startsWith("id_")) {
+                        // LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next);
+                        pstmt.setInt(i, (int) json.get(next));
+                    } else {
+                        //LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) json.get(next));
+                        pstmt.setString(i, (String) json.get(next));
+                    }                   
+                }
+            }
+
+            resultadoIIns = pstmt.executeUpdate();
         } catch (Exception namE) {
             throw new SQLException("No se pudo ejecutar el query: " + namE);
         } finally {

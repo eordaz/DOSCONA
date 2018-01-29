@@ -104,73 +104,102 @@ json =
                         <div class="params indent-2">
                             <pre>
 json =
-        {
-            "proyecto":
-                        {            
-                            "id_fondo": 201,
-                            "id_moneda": 194,
-                            "id_recurso": 189,
-                            "clave_proyecto": "101010",
-                            "nombre_proyecto": "Nombre del proyecto.",
-                            "id_cat_dependencia": 9,
-                            "id_cat_subdependencia": 12,
-                            "importe": 135,897,
-                            "fecha_inicio": "2018-01-17 16:14:56",
-                            "fecha_fin": "2019-01-17 16:14:56",
-                            "fecha_registro": now(),
-                            "fecha_actualizacion": now(),
-                            "estatus": 'Activo',
-                            "usuario_id":"eordaz"
-                        }
-            "documento":
-                        {
-                            "nombre_archivo": "Nombre_del_contrato.pdf",
-                            "ruta": "/Convenios/Recurso/Conacyt/Ejercicio/2018/211_01/CY101010/Contratos/",
-                            "serie": 189,
-                            "folio": "ABC2345",
-                            "rfc": "OAGE8706705",
-                            "importe": 135,897,
-                            "fecha_registro": now(),
-                            "fecha_actualizacion": now(),
-                            "estatus": 'Activo',
-                            "usuario_id":"eordaz"
-                        }    
-        }        
-                            </pre>
-                        </div>
-                        <br>
-                        <div class="indent-1">
-                            Parámetros:
-                        </div>
-                        <br>
-                        <div class="indent-2">
-                            <strong>proyecto</strong>:  parámetros que se requieren para la inserción de un proyecto CONACYT (obligatorio). <br>
-                            <strong>documento</strong>:  parámetros que se requieren para la inserción del documento que se integra en el proyecto CONACYT (obligatorio). <br>
-                        </div>
-                    </code>
-                    <h3 class="titles">Respuesta típica:</h3>
-                    <code class="code">
-                        <div class="response indent-1">
-                            <pre>
-                    Entrega el JSONArray, con el arreglo de los registros contenidos en el catálogo.
-                    En caso de ser true el campo "esComprobacion" la respuesta cambia.
-                    p.ej.: 
-                          "Insert or Update"
-json =                            
-        {
-            "proyecto":
-                        {            
-                            "id_proyecto": 189,
-                            "valor": True,
-                            "mensaje": "Su proyecto fue insertado/actualizado con éxito"
-                        }
-            "documento":
-                        {
-                            "id_proyecto": 179,
-                            "valor": True,
-                            "mensaje": "Su documento fue insertado/actualizado con éxito"
-                        }    
-        }                                           
+           {
+
+             "datosGenerales":{
+                                "clave_recurso":'CY',
+                                "clave_proyecto":'101010',
+                                "nombre_proyecto":'JOHONS CORPORATIONS',
+                                "id_fondo":201,
+                                "fecha_inicio":date,
+                                "fecha_fin":date,
+                                "importe_total":99256452.22,
+                                "id_moneda":192,
+                                "id_dependencia":10,
+                                "id_subdependencia":14,
+                                "id_usuario":1
+                              },
+             "etapasProyecto":{
+                                     "etapa_1": [
+                                                    {
+                                                     "clave_etapa":1,
+                                                     "id_recurso":189,                                                                                                                                        
+                                                     "id_cat_tipo_gasto":184,
+                                                     "importe_asignado":12565.23,
+                                                     "importe_autorizado":12565.23,
+                                                     "id_usuario":1                                                                                                                                           
+                                                    },
+                                                    {
+                                                     "clave_etapa":,
+                                                     "id_recurso":189,                                                                                                                                        
+                                                     "id_cat_tipo_gasto":186,
+                                                     "importe_asignado":25368.56,
+                                                     "importe_autorizado":25368.56,
+                                                     "id_usuario":1
+                                                    }
+                                                ],
+                                     "etapa_2":[
+                                                    {
+                                                     "clave_etapa":2,
+                                                     "id_recurso":189,                                                                                                                                        
+                                                     "id_cat_tipo_gasto":186,
+                                                     "importe_asignado":204894.56,
+                                                     "importe_autorizado":204894.56,
+                                                     "id_usuario"
+                                                     }
+                                                ],
+                                     "etapa_3":[
+                                                    {
+                                                     "clave_etapa":3,
+                                                     "id_recurso":189,                                                                                                                                        
+                                                     "id_cat_tipo_gasto":184,
+                                                     "importe_asignado":453344.98,
+                                                     "importe_autorizado":453344.98,
+                                                     "id_usuario":1
+                                                     }
+                                                ]                    
+                              },
+             "responsables":{
+                                "responsable_administrativo": {
+                                                                "rfc":'SACV760201GK3',
+                                                                "nombre":'VALERIA',
+                                                                "apellido_paterno":'SANDOVAL',
+                                                                "apellido_materno":'RAMIREZ',
+                                                                "clave_empleado":'125874',
+                                                                "correo":'',
+                                                                "telefono":'',                                                                                                                                  
+                                                                "id_usuario":1
+                                                               },
+                                "responsable_tecnico": {
+                                                        "rfc":'SACV760201GK3',,
+                                                        "nombre":'VALERIA',
+                                                        "apellido_paterno":'SANDOVAL',
+                                                        "apellido_materno":'125874',
+                                                        "clave_empleado":'',
+                                                        "correo":'',
+                                                        "telefono":'',                                                                                                                                  
+                                                        "id_usuario":1
+                                                        },
+                                "responsable_legal":{
+                                                     "rfc":,
+                                                     "nombre":,
+                                                     "apellido_paterno":,
+                                                     "apellido_materno":,
+                                                     "clave_empleado":,
+                                                     "correo":,
+                                                     "telefono":,                                                                                                                                    
+                                                     "id_usuario":
+                                                    }
+                            },
+             "documentos":{
+                           "documento":{
+                                        "id_documento":250,
+                                        "nombre_archivo":'contrato211_01_2018.pdf',
+                                        "ruta":/contratos/,
+                                        "id_usuario":1
+                                       }             
+                          }
+           }                                                                       
                             </pre>
                         </div>
                     </code>
