@@ -6,14 +6,13 @@
  */
 package conacyt.db;
 
-import conacyt.entityObject.UsuarioEntidad;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -314,19 +313,26 @@ public class RecordManager {
         int resultadoIIns = 0;
         try {
             getConnection();
-            //LOGGER.log(Level.INFO, methodStr + ">entidad." + entidad.toString());
-            //LOGGER.log(Level.INFO, methodStr + ">entroooooo." + query);
-            //LOGGER.log(Level.INFO, methodStr + ">json size." + json.size());
+            LOGGER.log(Level.INFO, methodStr + ">entroooooo." + query);
+            LOGGER.log(Level.INFO, methodStr + ">json." + json);
+            LOGGER.log(Level.INFO, methodStr + ">json size." + json.size());
             PreparedStatement pstmt = conn.prepareStatement(query);
 
             for (Iterator iterator = json.keys(); iterator.hasNext();) {
                 for (int i = 1; i <= json.size(); i++) {
                     String next = (String) iterator.next();
                     if (next.toString().startsWith("id_")) {
-                        // LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next);
+                         LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next);
                         pstmt.setInt(i, (int) json.get(next));
-                    } else {
-                        //LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) json.get(next));
+                    } else if(next.toString().startsWith("importe")){
+                        BigDecimal bg = new BigDecimal(json.getString(next));
+                        LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next+"--"+json.get(next)+"--------------\n"+Double.parseDouble(json.getString(next).replace(",", ".")));
+                        pstmt.setBigDecimal(i, bg);
+                    } else if(next.toString().startsWith("fecha")){                       
+                        LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next+"--"+json.get(next)+"--------------\n");
+                        pstmt.setDate(i, java.sql.Date.valueOf(json.getString(next)));
+                    }else {
+                        LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) json.get(next));
                         pstmt.setString(i, (String) json.get(next));
                     }
                 }

@@ -99,6 +99,7 @@ json =
            {
 
              "datosGenerales":{
+                                "id_proyecto":4,
                                 "id_fondo":201,
                                 "id_moneda":192,
                                 "id_recurso":189,
@@ -107,8 +108,8 @@ json =
                                 "id_dependencia":10,
                                 "id_subdependencia":14,
                                 "importe_total":"99256452.22",
-                                "fecha_inicio":"2018-01-29 00\\:00\\:01",
-                                "fecha_fin":"2018-01-30 23//:59//:59",
+                                "fecha_inicio":"2018-01-29",
+                                "fecha_fin":"2018-01-30",
                                 "id_usuario":1
                               },
              "etapasProyecto":[

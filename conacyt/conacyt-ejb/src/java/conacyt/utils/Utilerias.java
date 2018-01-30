@@ -84,7 +84,7 @@ public class Utilerias {
                     for (int i = 1; i <= params.size(); i++) {
                         String next = (String) iterator.next();
                         if (next.toString().startsWith("id_")) {
-                             LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next);
+                             LOGGER.log(Level.INFO, methodStr + ">pase pstmt .posición "+i+" value " + next);
                             query_usuario +=  next + "=" + (int) params.get(next)+" AND " ;
                         } else {
                             LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) params.get(next));
