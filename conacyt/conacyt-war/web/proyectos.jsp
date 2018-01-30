@@ -39,8 +39,7 @@
 json =
         {
             "id_recurso":189,
-            "clave_proyecto": "101010",
-            "esComprobacion": false
+            "clave_proyecto": "101010"
         } 
                             </pre>
                         </div>
@@ -50,7 +49,8 @@ json =
                         </div>
                         <br>
                         <div class="indent-2">
-                            <strong>tabla</strong>:  Nombre de la tabla del catálogo a obtener (obligatorio). <br>
+                            <strong>id_recurso</strong>:  identificador del proyecto a obtener (obligatorio). <br>
+                            <strong>clave_proyecto</strong>:  clave del proyecto a obtener (obligatorio). <br>
                         </div>
                     </code>
                     <h3 class="titles">Respuesta típica:</h3>

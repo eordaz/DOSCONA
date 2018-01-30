@@ -81,17 +81,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
                     && params.getInt("id_recurso") > 0 && !params.getString("clave_proyecto").isEmpty()) {
-
-                esComprobacion = params.containsKey("esComprobacion") ? params.getBoolean("esComprobacion") : esComprobacion;
-                /*Verifica que exista el recurso en la tabla */
-                if (esComprobacion) {
-                    campos_select = conacyt_cfg.getString("campos_comprobacion");
-                    //LOGGER.log(Level.WARNING, methodStr + ">query_comprobacion: > " + query_proyecto);
-                } else {
-                    campos_select = conacyt_cfg.getString("campos_proyecto");
-                    // LOGGER.log(Level.FINER, methodStr + ">query_proyecto: > " + query_proyecto);
-                }
-                query_proyecto = "SELECT " + campos_select + " FROM " + conacyt_cfg.getString("v_proyectos")
+                query_proyecto = "SELECT " + conacyt_cfg.getString("campos_proyecto") + " FROM " + conacyt_cfg.getString("v_proyectos")
                         + " WHERE estatus = \'Activo\' " + "AND id_recurso = " + params.getInt("id_recurso") + " AND clave_proyecto = " + params.getString("clave_proyecto");
                 result_json = recordManager.queryGetJSON(query_proyecto);
                 //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
@@ -176,7 +166,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         String query_upsert_proyecto = null;
         String clave_proyecto = null, clave_recurso = null;
         Integer id_proyecto = null;
-        int respuesta_upsert = 0, id_recurso=0;
+        int respuesta_upsert = 0, id_recurso = 0;
         //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
@@ -188,8 +178,8 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     JSONObject json_datosGrales = JSONObject.fromObject(json.getString("datosGenerales"));
 
                     LOGGER.log(Level.WARNING, methodStr + ">json_datosGrales.>" + json_datosGrales);
-                    id_recurso = json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? (int) json_datosGrales.get("id_recurso"): 0;
-                    clave_proyecto = json_datosGrales.containsKey("clave_proyecto") && !json_datosGrales.getString("clave_proyecto").isEmpty() ? (String) json_datosGrales.get("clave_proyecto"): "";
+                    id_recurso = json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? (int) json_datosGrales.get("id_recurso") : 0;
+                    clave_proyecto = json_datosGrales.containsKey("clave_proyecto") && !json_datosGrales.getString("clave_proyecto").isEmpty() ? (String) json_datosGrales.get("clave_proyecto") : "";
 
                     jsonExisteProyecto.accumulate("id_recurso", id_recurso);
                     jsonExisteProyecto.accumulate("clave_proyecto", clave_proyecto);
