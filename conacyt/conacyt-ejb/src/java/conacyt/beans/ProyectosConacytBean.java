@@ -53,6 +53,8 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                 result = obtenerProyectosPorClave(params);
             } else if (method.equals("insertarOactualizarProyecto")) {
                 result = insertarOactualizarProyecto(params);
+            } else if (method.equals("obtenerComprobacionesProyecto")) {
+                result = obtenerComprobacionesProyecto(params);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
             }
@@ -70,12 +72,12 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
      */
     private JSONArray obtenerProyectosPorClave(JSONObject params) {
         String methodStr = className + "::obtenerProyectosPorClave";
-        JSONObject result_json = null, nombre_proyecto = null, json_docs = null,
+        JSONObject result_json = null, json_docs = null,
                 json_tmp = new JSONObject();
-        JSONArray result = new JSONArray(), json_etapas_proyecto = null, result_resp = null;
-        boolean esComprobacion = false;
-        String query_proyecto = null, query_docs_proy = null, query_doc = null, query_etapas_proy = null, query_responsables_proy = null;
-        String clave_proyecto = null, clave_recurso = null, campos_select = new String();
+        JSONArray result = new JSONArray(), json_etapas_proyecto = null,
+                result_resp = null;
+        String query_proyecto = null, query_docs_proy = null, query_doc = null,
+                query_etapas_proy = null, query_responsables_proy = null;
         Integer id_docs_proyecto = null;
 
         try {
@@ -234,6 +236,42 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
         }
         result = JSONArray.fromObject(result_json);
+        return result;
+    }
+
+    private JSONArray obtenerComprobacionesProyecto(JSONObject params) {
+        String methodStr = className + "::obtenerComprobacionesProyecto";
+        JSONObject result_json = null;
+        JSONArray result = new JSONArray();
+        String query_comprobaciones_proyecto = null;
+
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject()
+                    && params.containsKey("id_proyecto") && params.getInt("id_proyecto") > 0) {
+                query_comprobaciones_proyecto = "SELECT * FROM " + conacyt_cfg.getString("v_anexos_comprobaciones")
+                        + " WHERE id_proyecto = " + params.getInt("id_proyecto");
+                result = recordManager.queryGetJSONFromJSON(query_comprobaciones_proyecto);
+                LOGGER.log(Level.FINER, methodStr + ">result_json: > " + result);
+                //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
+                if (result != null && !result.isEmpty()) {
+                    LOGGER.log(Level.INFO, methodStr + ">: > Se obtuvieron las comprobaciones asociadas al proyecto.");
+                } else {
+                    result_json = new JSONObject().accumulate("obtenerComprobacionesProyecto", "-1").accumulate("mensaje", " Ocurrió un error al realizar la consulta del proyecto requerido.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: > Ocurrió un error al realizar la consulta del proyecto requerido.");
+                    result.add(result_json);
+                }
+            } else {
+                result_json = new JSONObject().accumulate("obtenerComprobacionesProyecto", "-1").accumulate("mensaje", "Los parámetros que envía son nulos o vacíos.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+                result.add(result_json);
+            }
+        } catch (Exception ex) {
+            result_json = new JSONObject().accumulate("obtenerComprobacionesProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+            result.add(result_json);
+        }
+        //LOGGER.log(Level.FINER, methodStr + "result: >" + result);
+        //result = JSONArray.fromObject(result_json).fromObject(json_docs);
         return result;
     }
 
