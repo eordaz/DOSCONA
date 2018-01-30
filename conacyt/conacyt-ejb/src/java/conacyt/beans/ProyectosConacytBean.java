@@ -8,6 +8,7 @@ package conacyt.beans;
 import conacyt.db.RecordManager;
 import conacyt.utils.Utilerias;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +56,10 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                 result = insertarOactualizarProyecto(params);
             } else if (method.equals("obtenerComprobacionesProyecto")) {
                 result = obtenerComprobacionesProyecto(params);
+            } else if (method.equals("updsertEtapasProyecto")) {
+                result = updsertEtapasProyecto(params);
+            } else if (method.equals("updsertResponsablesProyecto")) {
+                result = updsertResponsablesProyecto(params);
             } else {
                 LOGGER.log(Level.WARNING, methodStr + ">Error: método desconocido.");
             }
@@ -83,7 +88,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
                     && params.getInt("id_recurso") > 0 && !params.getString("clave_proyecto").isEmpty()) {
-                query_proyecto = "SELECT " + conacyt_cfg.getString("campos_proyecto") + " FROM " + conacyt_cfg.getString("v_proyectos")
+                query_proyecto = "SELECT " + conacyt_cfg.getString("campos_proyecto_sel") + " FROM " + conacyt_cfg.getString("v_proyectos")
                         + " WHERE estatus = \'Activo\' " + "AND id_recurso = " + params.getInt("id_recurso") + " AND clave_proyecto = " + params.getString("clave_proyecto");
                 result_json = recordManager.queryGetJSON(query_proyecto);
                 //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
@@ -163,9 +168,9 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         String methodStr = className + "::insertarOactualizarProyecto";
         JSONObject result_json = null, jsonExisteProyecto = new JSONObject();
         JSONArray result = null;
-        String query_upsert_proyecto = null, query_upsert_etapas_proyecto=null;
+        String query_upsert_proyecto = null, query_upsert_etapas_proyecto = null, query_upsert_resp_proyecto = null;
         String clave_proyecto = null;
-        int respuesta_upsert = 0, id_recurso = 0, id_proyecto = 0;
+        int respuesta_upsert = 0, id_recurso = 0, id_proyecto = 0, count = 0;
         //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
@@ -173,6 +178,9 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     && params.containsKey("responsables") && params.containsKey("documentos")) {
                 JSONObject json = JSONObject.fromObject(params);
                 //LOGGER.log(Level.WARNING, methodStr + ">json.>" + json);
+                /**
+                 * INSERT O UPDATE DE DATOS GENERALES DEL PROYECTO
+                 */
                 if (!json.getString("datosGenerales").isEmpty()) {
                     JSONObject json_datosGrales = JSONObject.fromObject(json.getString("datosGenerales"));
                     //LOGGER.log(Level.WARNING, methodStr + ">json_datosGrales.>" + json_datosGrales);
@@ -201,12 +209,14 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         query_upsert_proyecto += " WHERE id_proyecto=" + (json_datosGrales.containsKey("id_proyecto") && json_datosGrales.getInt("id_proyecto") > 0 ? "?" : 0);
                         // LOGGER.log(Level.WARNING, methodStr + ">: > query_upsert_proyecto." + query_upsert_proyecto);
                     } else {
-//Se validan los campos requeridos para el registro del proyecto.
+                        // LOGGER.log(Level.INFO, methodStr + ">Existe proyecto: > FALSE.");
+                        //Se validan los campos requeridos para el registro del proyecto.
+                        //EN EL CASO DEL INSERT SE ELIMINA EL ID DEL PROYECTO, EN CASO DE HABERSE ENVIADO
                         if (json_datosGrales.containsKey("id_proyecto")) {
                             json_datosGrales.remove("id_proyecto");
                         }
-                        query_upsert_proyecto = "INSERT INTO "+conacyt_cfg.getString("proyectos")
-                                +" id_fondo, id_moneda, id_recurso, clave_proyecto, nombre_proyecto, id_cat_dependencia, id_cat_subdependencia, importe_total,fecha_inicio,fecha_fin,id_usuario) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                        query_upsert_proyecto = "INSERT INTO " + conacyt_cfg.getString("proyectos")
+                                + "( " + conacyt_cfg.getString("campos_proyecto_ins") + " ) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
                         // LOGGER.log(Level.WARNING, methodStr + ">: > query_upsert_proyecto." + query_upsert_proyecto);
                         // LOGGER.log(Level.WARNING, methodStr + ">: > json_datosGrales." + json_datosGrales);
                     }
@@ -214,24 +224,67 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     //LOGGER.log(Level.WARNING, methodStr + ">: > respuesta_upsert." + respuesta_upsert);
                     if (respuesta_upsert > 0) {
                         result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "1").accumulate("mensaje", "Se inserto proyecto con éxito.");
-                        LOGGER.log(Level.WARNING, methodStr + ">Error: > Se inserto proyecto con éxito.");
-                        if (!json.getString("etapasProyecto").isEmpty()) {
-                             JSONObject json_etapasP = JSONObject.fromObject(json.getString("etapas_proyecto"));
-                            query_upsert_etapas_proyecto = "INSERT INTO "+conacyt_cfg.getString("etapas_proyecto")
-                                    +" (clave_etapa,id_recurso,id_proyecto,id_ministracion,id_cat_tipo_gasto,importe_asignado,importe_autorizado,importe_comprometido, importe_ejercido,id_usuario) VALUES(?,?,?,?,?,?,?,?,?,?)";
-                            
-                            respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_etapas_proyecto, json_etapasP);
-                            
-                            if (respuesta_upsert > 0) {
-                                
-                            } else {
-                            result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
-                            LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
+                        LOGGER.log(Level.INFO, methodStr + ">Error: > Se inserto proyecto con éxito.");
+                        /**
+                         * INSERT O UPDATE DE ETAPAS DEL PROYECTO.
+                         */
+                        //result_json = updsertEtapasProyecto(json, id_proyecto);
+                        if (result_json.getInt("updsertEtapasProyecto") > 0) {
+
                         }
-                        } else {
-                            result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
-                            LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
-                        }
+//                        if (!json.getString("etapasProyecto").isEmpty()) {
+//                            JSONArray json_etapasP = JSONArray.fromObject(json.getString("etapas_proyecto"));
+//                            int etapas_size = json_etapasP.size();
+//                            //QUERY
+//                            query_upsert_etapas_proyecto = "INSERT INTO " + conacyt_cfg.getString("etapas_proyecto")
+//                                    + " ( " + conacyt_cfg.getString("campos_etapas_proyecto_ins") + " ) VALUES(?,?,?,?,?,?,?,?,?,?)";
+//
+//                            for (int i = 0; i < etapas_size; i++) {
+//                                JSONObject etapa = (JSONObject) json_etapasP.get(i);
+//                                LOGGER.log(Level.FINER, methodStr + ">Error: > etapa." + etapa);
+//                                respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_etapas_proyecto, etapa);
+//                                count++;
+//                            }
+//
+//                            if (etapas_size == count) {
+//                                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "1").accumulate("mensaje", "Se insertaron etapas con éxito.");
+//                                LOGGER.log(Level.INFO, methodStr + ">: > Se insertaron etapas con éxito.");
+//                                /**
+//                                 * INSERT O UPDATE DE ETAPAS DEL PROYECTO.
+//                                 */
+//                                if (!json.getString("responsables").isEmpty()) {
+//                                    JSONObject json_responsables = JSONObject.fromObject(json.getString("responsables"));
+//                                    int responsables_size = json_responsables.size();
+//
+//                                    query_upsert_resp_proyecto = "INSERT INTO " + conacyt_cfg.getString("responsables")
+//                                            + " (clave_etapa,id_recurso,id_proyecto,id_ministracion,id_cat_tipo_gasto,importe_asignado,importe_autorizado,importe_comprometido, importe_ejercido,id_usuario) VALUES(?,?,?,?,?,?,?,?,?,?)";
+//
+//                                    for (int j = 0; j < responsables_size; j++) {
+//                                        JSONObject responsable = (JSONObject) json_responsables.get(j);
+//                                        LOGGER.log(Level.FINER, methodStr + ">Error: > responsable." + responsable);
+//                                        for (int k = 0; k < responsable.size(); k++) {
+//                                            Object object = responsable.get(k);
+//                                            LOGGER.log(Level.FINER, methodStr + ">Error: > responsable." + responsable);
+//
+//                                        }
+////                                        if(responsable.getInt("") && Utilerias.existeRegistro(conacyt_cfg.getString("v_proyectos"), conacyt_cfg.getString("column_id_proyecto")){
+////                                            
+////                                        }
+//                                        // respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_etapas_proyecto, responsable);
+//                                        count++;
+//                                    }
+//                                } else {
+//                                    result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene los responsables del proyecto esta vacío.");
+//                                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene los resonsables del proyecto esta vacío.");
+//                                }
+//                            } else {
+//                                result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
+//                                LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
+//                            }
+//                        } else {
+//                            result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
+//                            LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
+//                        }
                     } else {
                         result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "No se inserto el proyecto con éxito.");
                         LOGGER.log(Level.WARNING, methodStr + ">Error: > No se inserto el usuario con éxito.");
@@ -252,6 +305,121 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         return result;
     }
 
+    private JSONArray updsertEtapasProyecto(JSONObject params) {
+        String methodStr = className + "::updsertEtapasProyecto";
+        JSONArray respuesta = null;
+        JSONObject result_json = null;
+        try {
+            result_json = updsertEtapasProyectos(params);
+        } catch (Exception e) {
+            result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + e);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", e);
+        }
+        respuesta = JSONArray.fromObject(result_json);
+        return respuesta;
+    }
+
+    private JSONObject updsertEtapasProyectos(JSONObject params) {
+        String methodStr = className + "::updsertEtapasProyecto";
+        JSONObject result_json = null;
+        String query_upsert_etapas_proyecto = null;
+        int respuesta_upsert = 0, count = 0;
+        //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("etapasProyecto").isEmpty()) {
+                /**
+                 * INSERT O UPDATE DE ETAPAS DEL PROYECTO.
+                 */
+                JSONArray json_etapasP = JSONArray.fromObject(params.getString("etapasProyecto"));
+                int etapas_size = json_etapasP.size();
+                //QUERY
+                query_upsert_etapas_proyecto = "INSERT INTO " + conacyt_cfg.getString("etapas_proyecto")
+                        + "(" + conacyt_cfg.getString("campos_etapas_proyecto_ins") + ") VALUES(?,?,?,?,?,?,?,?)";
+
+                for (int i = 0; i < etapas_size; i++) {
+                    JSONObject etapa = (JSONObject) json_etapasP.get(i);
+                    LOGGER.log(Level.FINER, methodStr + ">: > etapa." + etapa);
+                    respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_etapas_proyecto, etapa);
+                    if (respuesta_upsert > 0) {
+                        count++;
+                    }
+                }
+                LOGGER.log(Level.FINER, methodStr + ">: > etapas_size." + etapas_size + " count " + count);
+
+                if (etapas_size == count) {
+                    result_json = new JSONObject().accumulate("updsertEtapasProyecto", etapas_size).accumulate("mensaje", "Se insertaron etapas con éxito.");
+                    LOGGER.log(Level.INFO, methodStr + ">: > Se insertaron etapas con éxito.");
+                } else {
+                    result_json = new JSONObject().accumulate("updsertEtapasProyecto", "-1").accumulate("mensaje", "Ocurrió un error, No se insertaron etapas con éxito.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: >Ocurrió un error, No se insertaron etapas con éxito.");
+                }
+            } else {
+                result_json = new JSONObject().accumulate("updsertEtapasProyecto", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
+            }
+        } catch (Exception ex) {
+            result_json = new JSONObject().accumulate("updsertEtapasProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+        }
+        return result_json;
+    }
+
+    private JSONArray updsertResponsablesProyecto(JSONObject params) {
+        String methodStr = className + "::updsertEtapasProyecto";
+        JSONArray respuesta = null;
+        JSONObject result_json = null;
+        try {
+            result_json = updsertEtapasProyectos(params);
+        } catch (Exception e) {
+            result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + e);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", e);
+        }
+        respuesta = JSONArray.fromObject(result_json);
+        return respuesta;
+    }
+    private JSONObject updsertResponsablesProyectos(JSONObject params) {
+        String methodStr = className + "::updsertResponsablesProyectos";
+        JSONObject result_json = null;
+        JSONArray result = null;
+        String query_sel_responsable = null, query_upsert_responsables_proyecto = null;
+        int respuesta_upsert = 0, id_proyecto = 0, count = 0, id_usuario = 0, id_cat_tipo_responsable = 0;
+        //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("responsables").isEmpty()) {
+               JSONArray json_responsablesP = JSONArray.fromObject(params.getString("etapasProyecto"));
+                int responsables_size = json_responsablesP.size();
+                //QUERY
+                query_upsert_responsables_proyecto = "INSERT INTO " + conacyt_cfg.getString("responsable")
+                        + "(" + conacyt_cfg.getString("campos_responsable_proyecto_ins") + ") VALUES(?,?,?,?,?,?,?,?)";
+
+                for (int i = 0; i < responsables_size; i++) {
+                    JSONObject etapa = (JSONObject) json_responsablesP.get(i);
+                    LOGGER.log(Level.FINER, methodStr + ">: > etapa." + etapa);
+                    respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_responsables_proyecto, etapa);
+                    if (respuesta_upsert > 0) {
+                        count++;
+                    }
+                }
+                LOGGER.log(Level.FINER, methodStr + ">: > etapas_size." + responsables_size + " count " + count);
+
+                if (responsables_size == count) {
+                    result_json = new JSONObject().accumulate("updsertResponsablesProyectos", responsables_size).accumulate("mensaje", "Se insertaron etapas con éxito.");
+                    LOGGER.log(Level.INFO, methodStr + ">: > Se insertaron etapas con éxito.");
+                } else {
+                    result_json = new JSONObject().accumulate("updsertResponsablesProyectos", "-1").accumulate("mensaje", "Ocurrió un error, No se insertaron etapas con éxito.");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: >Ocurrió un error, No se insertaron etapas con éxito.");
+                }
+            } else {
+                result_json = new JSONObject().accumulate("updsertResponsablesProyectos", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
+            }
+        } catch (Exception ex) {
+            result_json = new JSONObject().accumulate("updsertResponsablesProyectos", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+        }
+        return result_json;
+    }
+
     private JSONArray obtenerComprobacionesProyecto(JSONObject params) {
         String methodStr = className + "::obtenerComprobacionesProyecto";
         JSONObject result_json = null;
@@ -260,17 +428,18 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
 
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject()
-                    && params.containsKey("id_proyecto") && params.getInt("id_proyecto") > 0) {
+                    && params.containsKey("id_recurso") && params.getInt("id_recurso") > 0
+                    && params.containsKey("clave_proyecto") && !params.getString("clave_proyecto").isEmpty()) {
                 query_comprobaciones_proyecto = "SELECT * FROM " + conacyt_cfg.getString("v_anexos_comprobaciones")
-                        + " WHERE id_proyecto = " + params.getInt("id_proyecto");
+                        + " WHERE id_recurso = " + params.getInt("id_recurso") + " AND clave_proyecto = "+params.getString("clave_proyecto");
                 result = recordManager.queryGetJSONFromJSON(query_comprobaciones_proyecto);
                 LOGGER.log(Level.FINER, methodStr + ">result_json: > " + result);
                 //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
                 if (result != null && !result.isEmpty()) {
                     LOGGER.log(Level.INFO, methodStr + ">: > Se obtuvieron las comprobaciones asociadas al proyecto.");
                 } else {
-                    result_json = new JSONObject().accumulate("obtenerComprobacionesProyecto", "-1").accumulate("mensaje", " Ocurrió un error al realizar la consulta del proyecto requerido.");
-                    LOGGER.log(Level.WARNING, methodStr + ">Error: > Ocurrió un error al realizar la consulta del proyecto requerido.");
+                    result_json = new JSONObject().accumulate("obtenerComprobacionesProyecto", "-1").accumulate("mensaje", " Ocurrió un error al realizar la consulta de las comprobacion(es) requerida(s).");
+                    LOGGER.log(Level.WARNING, methodStr + ">Error: > Ocurrió un error al realizar la consulta de las comprobacion(es) requerida(s).");
                     result.add(result_json);
                 }
             } else {

@@ -3,7 +3,7 @@
     Universidad Nacional Autónoma de México
     Document   : Página de referencia de los servicios web
     Created on : 02 de Enero, 2018
-    Author     : Veronica Sánchez <veronica.sanchez@patronato.unam.mx>
+    Author     : Edith Ordaz <edith.ordaz@patronato.unam.mx><edith.ordaz@gmail.com>
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -114,32 +114,40 @@ json =
                               },
              "etapasProyecto":[
                                     {
-                                     "clave_etapa":1,
+                                     "id_etapa":1,
                                      "id_recurso":189,                                                                                                                                        
+                                     "id_proyecto":4,
+                                     "id_ministracion":1,
                                      "id_cat_tipo_gasto":184,
                                      "importe_asignado":"12565.23",
                                      "importe_autorizado":"12565.23",
                                      "id_usuario":1                                                                                                                                           
                                     },
                                     {
-                                     "clave_etapa":1,
+                                     "id_etapa":1,
                                      "id_recurso":189,                                                                                                                                        
+                                     "id_proyecto":4,
+                                     "id_ministracion":4,
                                      "id_cat_tipo_gasto":186,
                                      "importe_asignado":"25368.56",
                                      "importe_autorizado":"25368.56",
                                      "id_usuario":1
                                     },
                                     {
-                                     "clave_etapa":2,
+                                     "id_etapa":2,
                                      "id_recurso":189,                                                                                                                                        
+                                     "id_proyecto":4,
+                                     "id_ministracion":4,
                                      "id_cat_tipo_gasto":186,
                                      "importe_asignado":"204894.56",
                                      "importe_autorizado":"204894.56",
                                      "id_usuario":1
                                      },
                                     {
-                                     "clave_etapa":3,
+                                     "id_etapa":3,
                                      "id_recurso":189,                                                                                                                                        
+                                     "id_proyecto":4,
+                                     "id_ministracion":4,
                                      "id_cat_tipo_gasto":184,
                                      "importe_asignado":"453344.98",
                                      "importe_autorizado":"453344.98",
@@ -148,6 +156,7 @@ json =
                               ],
              "responsables":{
                                 {
+                                    "id_cat_tipo_responsable":'207',
                                     "rfc":'SACV760201GK3',
                                     "nombre":'VALERIA',
                                     "apellido_paterno":'SANDOVAL',
@@ -158,6 +167,7 @@ json =
                                     "id_usuario":1
                                 },
                                 {
+                                    "id_cat_tipo_responsable":'208',
                                     "rfc":'SACV760201GK3',
                                     "nombre":'VALERIA',
                                     "apellido_paterno":'SANDOVAL',
@@ -168,6 +178,7 @@ json =
                                     "id_usuario":1
                                 },
                                 {
+                                    "id_cat_tipo_responsable":'209',
                                     "rfc":"OAGE810407",
                                     "nombre":"Edith",
                                     "apellido_paterno":"Ordaz",

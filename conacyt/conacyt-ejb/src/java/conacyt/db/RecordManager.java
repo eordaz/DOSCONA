@@ -129,7 +129,7 @@ public class RecordManager {
                     result.put(metadata.getColumnName(i), rs.getObject(i));
                     //LOGGER.log(Level.INFO, methodStr + ">----- al result. " + result);
                 }
-             
+
 //                if (!result.getString("descripcion").isEmpty()) {
 //                    result_json.put(result.getString("descripcion"), result);
 //                    LOGGER.log(Level.INFO, methodStr + ">Que hay en el json_result. " + result_json);
@@ -165,7 +165,7 @@ public class RecordManager {
 
             while (rs.next()) {
                 // LOGGER.log(Level.INFO, methodStr + ">Entre al while. ");
-                    json = new JSONObject();
+                json = new JSONObject();
                 for (int i = 1; i < cols + 1; i++) {
                     //LOGGER.log(Level.INFO, methodStr + ">Entre al for. ");
                     json.put(metadata.getColumnName(i), rs.getObject(i));
@@ -174,7 +174,7 @@ public class RecordManager {
                 result.add(json);
                 //result.put("etapa_" + count, etapa);
                 LOGGER.log(Level.INFO, methodStr + ">Que hay en el result. " + result);
-               // count++;
+                // count++;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, methodStr + ">Excepción al ejecutar el método: " + methodStr, ex);
@@ -321,18 +321,15 @@ public class RecordManager {
             for (Iterator iterator = json.keys(); iterator.hasNext();) {
                 for (int i = 1; i <= json.size(); i++) {
                     String next = (String) iterator.next();
+                    LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre a la posición: " + i + " con value: " + next);
                     if (next.toString().startsWith("id_")) {
-                         LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next);
                         pstmt.setInt(i, (int) json.get(next));
-                    } else if(next.toString().startsWith("importe")){
+                    } else if (next.toString().startsWith("importe")) {
                         BigDecimal bg = new BigDecimal(json.getString(next));
-                        LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next+"--"+json.get(next)+"--------------\n"+Double.parseDouble(json.getString(next).replace(",", ".")));
                         pstmt.setBigDecimal(i, bg);
-                    } else if(next.toString().startsWith("fecha")){                       
-                        LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre id_usuario.posición "+i+" value " + next+"--"+json.get(next)+"--------------\n");
+                    } else if (next.toString().startsWith("fecha")) {
                         pstmt.setDate(i, java.sql.Date.valueOf(json.getString(next)));
-                    }else {
-                        LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) json.get(next));
+                    } else {
                         pstmt.setString(i, (String) json.get(next));
                     }
                 }
