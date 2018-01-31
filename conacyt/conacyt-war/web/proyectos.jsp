@@ -154,8 +154,9 @@ json =
                                      "id_usuario":1
                                      }                  
                               ],
-             "responsables":{
+             "responsables":[
                                 {
+                                    "id_proyecto":4,
                                     "id_cat_tipo_responsable":'207',
                                     "rfc":'SACV760201GK3',
                                     "nombre":'VALERIA',
@@ -167,6 +168,7 @@ json =
                                     "id_usuario":1
                                 },
                                 {
+                                    "id_proyecto":4,
                                     "id_cat_tipo_responsable":'208',
                                     "rfc":'SACV760201GK3',
                                     "nombre":'VALERIA',
@@ -178,6 +180,7 @@ json =
                                     "id_usuario":1
                                 },
                                 {
+                                    "id_proyecto":4,
                                     "id_cat_tipo_responsable":'209',
                                     "rfc":"OAGE810407",
                                     "nombre":"Edith",
@@ -188,15 +191,17 @@ json =
                                     "telefono":"5528490741",                                                                                                                                    
                                     "id_usuario":1
                                 }
-                            },
-             "documentos":{
-                           "documento":{
-                                        "id_documento":250,
-                                        "nombre_archivo":'contrato211_01_2018.pdf',
-                                        "ruta":"/contratos/",
-                                        "id_usuario":1
-                                       }             
-                          }
+                            ],
+             "documentos":[
+                                {
+                                    "id_cat_documentos":250,
+                                    "id_proyecto":4,
+                                    "nombre_archivo":'contrato211_01_2018.pdf',
+                                    "ruta":"/contratos/",
+                                    "id_comprobacion":1,
+                                    "id_usuario":1
+                                }             
+                          ]
            }                                                                       
                             </pre>
                         </div>

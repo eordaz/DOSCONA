@@ -10,9 +10,12 @@
 </div>
 <div id="menu">
   <a href="index.jsp">Inicio</a>  
-  <a href="login.jsp">Login CONACYT</a>
-  <a href="usuarios.jsp">Usuarios CONACYT</a>
-  <a href="catalogos.jsp">Catálogos CONACYT</a>
-  <a href="proyectos.jsp">Proyectos CONACYT</a>
-  <a href="carga.jsp">Carga de Archivos CONACYT</a>
+  <a href="login.jsp">Login </a>
+  <a href="usuarios.jsp">Usuarios </a>
+  <a href="catalogos.jsp">Catálogos </a>
+  <a href="proyectos.jsp">Proyectos </a>
+  <a href="comprobaciones.jsp">Comprobaciones </a>
+  <a href="etapas.jsp">Etapas  </a>
+  <a href="responsables.jsp">Responsables </a>
+  <a href="carga.jsp">Documentos </a>
 </div>

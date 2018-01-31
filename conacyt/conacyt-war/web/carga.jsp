@@ -67,6 +67,127 @@ json =
             <input type="submit" value="POST">
           </form>
         </div>
+          
+        <div class="section">
+                    <h2 class="titles">obtenerDocumentosProyecto</h2>
+                    <div class="description">
+                        Servicio para la Consulta de documentos del proyecto.
+                    </div>
+                    <h3 class="titles">Ejemplo:</h3>
+                    <code class="example">
+                        <div class="indent-1">
+                            resources/conacyt/proyectos/obtenerDocumentosProyecto
+                        </div>
+                        <br>
+                        <div class="params indent-2">
+                            <pre>
+json =  {
+            "id_proyecto":4, 
+        }                          
+                            </pre>
+                        </div>
+                        <br>
+                        <div class="indent-1">
+                            Parámetros:
+                        </div>
+                        <br>
+                        <div class="indent-2">
+                            <strong>id_proyecto</strong>:  identificador del proyecto asociado a los documentos a obtener (obligatorio). <br>
+                        </div>
+                    </code>
+                    <h3 class="titles">Respuesta típica:</h3>
+                    <code class="code">
+                        <div class="response indent-1">
+                            <pre>
+                    Entrega el JSONArray, con el arreglo de los registros contenidos en el catálogo.                         
+                           
+json =
+        {
+            "documentos":[
+                                {
+                                    "id_cat_documentos":250,
+                                    "id_proyecto":4,
+                                    "nombre_archivo":'contrato211_01_2018.pdf',
+                                    "ruta":"/contratos/",
+                                    "id_comprobacion":1,
+                                    "id_usuario":1
+                                }             
+                          ]
+        }
+                            </pre>
+                        </div>
+                    </code>
+                    <h3 class="titles">Probar:</h3>
+                    <form class="forms" action="resources/conacyt/proyectos/obtenerDocumentosProyecto" method="GET">
+                        <input type="text" name="json" id="json" size="60" placeholder=" json">
+                        <input type="submit" value="GET">
+                    </form>
+                    <form class="forms" action="resources/conacyt/proyectos/obtenerDocumentosProyecto" method="POST">
+                        <input type="text" name="json" id="json" size="60" placeholder=" json">
+                        <input type="submit" value="POST">
+                    </form>
+                </div> 
+                
+                <div class="section">
+                    <h2 class="titles">updsertDocumentoProyecto</h2>
+                    <div class="description">
+                        Servicio para insertar registro de documentos del proyecto.
+                    </div>
+                    <h3 class="titles">Ejemplo:</h3>
+                    <code class="example">
+                        <div class="indent-1">
+                            resources/conacyt/proyectos/updsertDocumentoProyecto
+                        </div>
+                        <br>
+                        <div class="params indent-2">
+                            <pre>
+json = {
+            "documentos":[
+                                {
+                                    "id_cat_documentos":250,
+                                    "id_proyecto":4,
+                                    "nombre_archivo":'contrato211_01_2018.pdf',
+                                    "ruta":"/contratos/",
+                                    "id_comprobacion":1,
+                                    "id_usuario":1
+                                }             
+                          ]
+        }
+                            </pre>
+                        </div>
+                        <br>
+                        <div class="indent-1">
+                            Parámetros:
+                        </div>
+                        <br>
+                        <div class="indent-2">
+                            <strong>id_proyecto</strong>:  identificador del proyecto asociado a los responsables a obtener (obligatorio). <br>
+                        </div>
+                    </code>
+                    <h3 class="titles">Respuesta típica:</h3>
+                    <code class="code">
+                        <div class="response indent-1">
+                            <pre>
+                    Entrega el JSONArray, con el arreglo de los registros contenidos.                         
+                           
+json =
+        { 
+            "updsertDocumentosProyecto":	1,
+            "mensaje":	"Se agregaron documentos de proyecto exitosamente",
+        }
+                            </pre>
+                        </div>
+                    </code>
+                    <h3 class="titles">Probar:</h3>
+                    <form class="forms" action="resources/conacyt/proyectos/updsertDocumentoProyecto" method="GET">
+                        <input type="text" name="json" id="json" size="60" placeholder=" json">
+                        <input type="submit" value="GET">
+                    </form>
+                    <form class="forms" action="resources/conacyt/proyectos/updsertDocumentoProyecto" method="POST">
+                        <input type="text" name="json" id="json" size="60" placeholder=" json">
+                        <input type="submit" value="POST">
+                    </form>
+                </div>
 
        <!--div class="section">
           <h2 class="titles">datoscsv</h2>

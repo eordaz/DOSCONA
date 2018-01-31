@@ -93,9 +93,9 @@ public class Utilerias {
                     }
                 }
                 LOGGER.log(Level.INFO, methodStr + ">: > El columna.> " + columna);
-                LOGGER.log(Level.INFO, methodStr + ">: > El query_usuario1.> " + query_usuario);
+                LOGGER.log(Level.INFO, methodStr + ">: > El query_.> " + query_usuario);
                 query_usuario = query_usuario.substring(0, query_usuario.length() - 4);
-                LOGGER.log(Level.INFO, methodStr + ">: > El query_usuario.> " + query_usuario);
+                LOGGER.log(Level.INFO, methodStr + ">: > El query_.> " + query_usuario);
                 id_usuario = recordManager.executeQueryToID(query_usuario, columna);
                 //LOGGER.log(Level.FINEST, methodStr + ">Error: > El id_usuario.> " + id_usuario);
                 if (id_usuario != null && id_usuario > 0) {
