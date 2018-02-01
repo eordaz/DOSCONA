@@ -210,7 +210,7 @@ public class RecordManager {
                     if (!esSubdependencia) {
                         json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
                         json_individual.put(metadata.getColumnName(i + 3), rs.getObject(3));
-                        json_individual.put(metadata.getColumnName(i + 4), rs.getString(4));
+                        json_individual.put(metadata.getColumnName(i + 4), rs.getObject(3)+"-"+rs.getString(4));
                         //json_result = JSONObject.fromObject(json_individual);
                     } else {
                         json_individual.put(metadata.getColumnName(i + 1), rs.getObject(i + 1));
@@ -249,8 +249,7 @@ public class RecordManager {
         try {
             getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query);
-            rs = pstmt.executeQuery();
-
+            rs = pstmt.executeQuery();                        
             while (rs.next()) {
                 Object next = rs.getObject(columnID);
                 //LOGGER.log(Level.FINEST, methodStr + ">Que hay en el next. " + next);

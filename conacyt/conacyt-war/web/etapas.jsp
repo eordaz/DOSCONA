@@ -192,8 +192,8 @@ json = {
                            
 json =
         { 
-            "id_comprobacion":	1,
-            "importe":	"200.25",
+            "updsertEtapasProyecto":	1,
+            "mensaje":	"Se agregaron etapas de proyecto exitosamente"
         }
                             </pre>
                         </div>

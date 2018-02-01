@@ -253,23 +253,10 @@ json =
                            
 json =
         { 
-            "id_comprobacion":	1,
-            "importe":	"200.25",
-            "fecha_reg":"2018-01-29",
-            "id_proyecto":	4
-            "id_dependencia":	9
-            "clave_dependencia":"211"
-            "Dependencia_desc":	"COORDINACIÓN DE HUMANIDADES"
-            "id_subdependencia":12
-            "clave_subdependencia":"214"
-            "Subdependencia_descr":"INSTITUTO DE INVESTIGACIONES ESTÉTICAS "
-            "id_recurso":   189
-            "clave_recurso":	"CY"
-            "clave_proyecto":	"101010"
-            "proyecto_desc":	"prueba de proyecto"
-            "id_cat_documentos":	261
-            "documentos_descr":	"NOTAS Y RECIBOS"
-            "nombre_archivo":	"prueba4.pdf"
+            
+            "updsertEtapasProyecto":	1,
+            "mensaje":	"Se agregó proyecto exitosamente: Datos Genarles, Representantes, Etapas y Documentos."
+        
         }
                             </pre>
                         </div>

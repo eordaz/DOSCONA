@@ -39,7 +39,7 @@
                             <pre>
 json =
         {
-            "clave_proyecto":4,
+            "clave_proyecto":101010,
             "id_recurso":189
         } 
                             </pre>
@@ -60,24 +60,21 @@ json =
                     Entrega el JSONArray, con el arreglo de los registros contenidos en el catálogo.                         
                            
 json =
-        { 
-            "id_comprobacion":	1,
-            "importe":	"200.25",
-            "fecha_reg":"2018-01-29",
-            "id_proyecto":	4
-            "id_dependencia":	9
-            "clave_dependencia":"211"
-            "Dependencia_desc":	"COORDINACIÓN DE HUMANIDADES"
-            "id_subdependencia":12
-            "clave_subdependencia":"214"
-            "Subdependencia_descr":"INSTITUTO DE INVESTIGACIONES ESTÉTICAS "
-            "id_recurso":   189
-            "clave_recurso":	"CY"
-            "clave_proyecto":	"101010"
-            "proyecto_desc":	"prueba de proyecto"
-            "id_cat_documentos":	261
-            "documentos_descr":	"NOTAS Y RECIBOS"
-            "nombre_archivo":	"prueba4.pdf"
+        {
+            "id_proyecto":4,
+            "id_cheque":4,
+            "id_etapa_proyecto":1,
+            "concepto":"212",		
+            "importe":200.25,        
+            "id_usuario":10,
+            "id_tipo_gasto":10,
+            "id_cat_cat_documento":210
+            "nombre_archivo":"prueba4.pdf",
+            "ruta":"/contratos"
+            "seri":"serie",
+            "folio":"folioX"
+            "rfc":"OALE810506H7E",
+            "importe_documento":"es el mismo que el de arriba"
         }
                             </pre>
                         </div>
@@ -93,22 +90,32 @@ json =
                     </form>
                 </div> 
                 
-                <!--div class="section">
-                    <h2 class="titles">updsertComprobacionesProyecto</h2>
+                <div class="section">
+                    <h2 class="titles">updsertComprobacionesP</h2>
                     <div class="description">
                         Servicio para insertar registro de comprobaciones del proyecto.
                     </div>
                     <h3 class="titles">Ejemplo:</h3>
                     <code class="example">
                         <div class="indent-1">
-                            resources/conacyt/proyectos/updsertComprobacionesProyecto
+                            resources/conacyt/proyectos/updsertComprobacionesP
                         </div>
                         <br>
                         <div class="params indent-2">
                             <pre>
 json =
-        {
-            "id_proyecto":4
+        {            
+            "id_recurso":189,
+            "clave_proyecto":101010,
+            "id_cheque":4,
+            "id_etapa_proyecto":1,
+            "concepto":"212",		
+            "importe":200.25, 
+            "no_total_documentos":3,
+            "id_usuario":10,
+            "id_tipo_gasto":10,
+            "id_cat_cat_documento":210,
+            "nombre_archivo":"prueba4.pdf"           
         } 
                             </pre>
                         </div>
@@ -118,7 +125,8 @@ json =
                         </div>
                         <br>
                         <div class="indent-2">
-                            <strong>id_proyecto</strong>:  identificador del proyecto asociado a las comprobaciones a obtener (obligatorio). <br>
+                            <strong>clave_proyecto</strong>:  clave del proyecto asociado a las comprobaciones a obtener (obligatorio). <br>
+                            <strong>id_recurso</strong>:  identificador del recurso proyecto asociado a las comprobaciones a obtener (obligatorio). <br>
                         </div>
                     </code>
                     <h3 class="titles">Respuesta típica:</h3>
@@ -129,37 +137,24 @@ json =
                            
 json =
         { 
-            "id_comprobacion":	1,
-            "importe":	"200.25",
-            "fecha_reg":"2018-01-29",
-            "id_proyecto":	4
-            "id_dependencia":	9
-            "clave_dependencia":"211"
-            "Dependencia_desc":	"COORDINACIÓN DE HUMANIDADES"
-            "id_subdependencia":12
-            "clave_subdependencia":"214"
-            "Subdependencia_descr":"INSTITUTO DE INVESTIGACIONES ESTÉTICAS "
-            "id_recurso":   189
-            "clave_recurso":	"CY"
-            "clave_proyecto":	"101010"
-            "proyecto_desc":	"prueba de proyecto"
-            "id_cat_documentos":	261
-            "documentos_descr":	"NOTAS Y RECIBOS"
-            "nombre_archivo":	"prueba4.pdf"
+            { 
+            "updsertComprobaciones":	1,
+            "mensaje":	"Se agregó comprobación de proyecto exitosamente"
         }
+        
                             </pre>
                         </div>
                     </code>
                     <h3 class="titles">Probar:</h3>
-                    <form class="forms" action="resources/conacyt/proyectos/updsertComprobacionesProyecto" method="GET">
+                    <form class="forms" action="resources/conacyt/proyectos/updsertComprobacionesP" method="GET">
                         <input type="text" name="json" id="json" size="60" placeholder=" json">
                         <input type="submit" value="GET">
                     </form>
-                    <form class="forms" action="resources/conacyt/proyectos/updsertComprobacionesProyecto" method="POST">
+                    <form class="forms" action="resources/conacyt/proyectos/updsertComprobacionesP" method="POST">
                         <input type="text" name="json" id="json" size="60" placeholder=" json">
                         <input type="submit" value="POST">
                     </form>
-                </div--> 
+                </div> 
             </div>
         </div>
     </body>

@@ -182,7 +182,7 @@ json = {
 json =
         { 
             "updsertResponsablesProyecto":	1,
-            "mensaje":	"Se agregaron responsables de proyecto exitosamente",
+            "mensaje":	"Se agregaron responsables de proyecto exitosamente"
         }
                             </pre>
                         </div>

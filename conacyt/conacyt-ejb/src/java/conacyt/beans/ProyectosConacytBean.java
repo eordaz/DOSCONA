@@ -56,6 +56,8 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                 result = insertarOactualizarProyecto(params);
             } else if (method.equals("obtenerComprobacionesProyecto")) {
                 result = obtenerComprobacionesProyecto(params);
+            } else if (method.equals("updsertComprobacionesP")) {
+                result = updsertComprobacionesP(params);
             } else if (method.equals("updsertEtapasProyecto")) {
                 result = updsertEtapasProyecto(params);
             } else if (method.equals("updsertResponsablesProyecto")) {
@@ -99,20 +101,20 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     json_tmp.put("datosGenerales", (Object) result_json);
                     //result.add(json_tmp);
                     query_docs_proy = "SELECT * FROM " + conacyt_cfg.getString("documentos_proyecto")
-                            + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
+                            + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + "=" + result_json.getInt("id_proyecto");
 
                     id_docs_proyecto = recordManager.executeQueryToID(query_docs_proy, conacyt_cfg.getString("column_id_documentos_proyecto"));
                     LOGGER.log(Level.FINER, methodStr + ">id_docs_proyecto: > " + id_docs_proyecto);
                     if (id_docs_proyecto != null && id_docs_proyecto > 0) {
                         query_doc = "SELECT * FROM " + conacyt_cfg.getString("documentos")
-                                + " WHERE " + conacyt_cfg.getString("column_id_documentos_proy") + " = " + id_docs_proyecto;
+                                + " WHERE " + conacyt_cfg.getString("id_cat_cat_documentos") + " = " + id_docs_proyecto;
                         json_docs = recordManager.queryGetJSON(query_doc);
                         LOGGER.log(Level.FINER, methodStr + ">json_docs: > " + json_docs);
                         if (json_docs != null && !json_docs.isEmpty()) {
                             json_tmp.put("documentos", (Object) json_docs);
                             //result.add(json_tmp);
                             query_etapas_proy = "SELECT * FROM " + conacyt_cfg.getString("v_etapas_proyecto")
-                                    + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
+                                    + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + "=" + result_json.getInt("id_proyecto");
 
                             LOGGER.log(Level.FINER, methodStr + ">Error: > El query_etapas_proy ." + query_etapas_proy);
                             json_etapas_proyecto = recordManager.queryGetJSONFromJSON(query_etapas_proy);
@@ -121,7 +123,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                                 json_tmp.put("etapas_proyecto", (Object) json_etapas_proyecto);
                                 //LOGGER.log(Level.FINER, methodStr + ">Error: > El json_tmp ." + json_tmp);
                                 query_responsables_proy = "SELECT * FROM " + conacyt_cfg.getString("v_responsables_proyecto")
-                                        + " WHERE id_proyecto=" + result_json.getInt("id_proyecto");
+                                        + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + "=" + result_json.getInt("id_proyecto");
                                 result_resp = recordManager.queryGetJSONFromJSON(query_responsables_proy);
                                 if (query_responsables_proy != null && !query_responsables_proy.isEmpty()) {
                                     json_tmp.put("responsables", (Object) result_resp);
@@ -170,9 +172,9 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
 
     private JSONArray insertarOactualizarProyecto(JSONObject params) {
         String methodStr = className + "::insertarOactualizarProyecto";
-        JSONObject result_json = null, jsonExisteProyecto = new JSONObject();
+        JSONObject result_json = null, jsonExisteProyecto = new JSONObject(), params_select_proyecto = new JSONObject();
         JSONArray result = null;
-        String query_upsert_proyecto = null, query_upsert_etapas_proyecto = null, query_upsert_resp_proyecto = null;
+        String query_upsert_proyecto = null, query_upsert_etapas_proyecto = null, query_upsert_resp_proyecto = null, query_sel_documento = null;
         String clave_proyecto = null;
         int respuesta_upsert = 0, id_recurso = 0, id_proyecto = 0, count = 0;
         //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
@@ -198,20 +200,20 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     if ((json_datosGrales.containsKey("id_proyecto") && json_datosGrales.getInt("id_proyecto") > 0)
                             && Utilerias.existeRegistro(conacyt_cfg.getString("v_proyectos"), conacyt_cfg.getString("column_id_proyecto"), jsonExisteProyecto)) {
                         // LOGGER.log(Level.INFO, methodStr + ">Existe proyecto: > TRUE.");
-                        query_upsert_proyecto = "UPDATE Proyecto SET ";
-                        query_upsert_proyecto += json_datosGrales.containsKey("id_fondo") && json_datosGrales.getInt("id_fondo") > 0 ? "id_fondo=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("id_moneda") && json_datosGrales.getInt("id_moneda") > 0 ? "id_moneda=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? "id_recurso=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("clave_proyecto") && !json_datosGrales.getString("clave_proyecto").isEmpty() ? "clave_proyecto=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("nombre_proyecto") && !json_datosGrales.getString("nombre_proyecto").isEmpty() ? "nombre_proyecto=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("id_cat_dependencia") && json_datosGrales.getInt("id_cat_dependencia") > 0 ? "id_cat_dependencia=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("id_cat_subdependencia") && json_datosGrales.getInt("id_cat_subdependencia") > 0 ? "id_cat_subdependencia=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("importe_total") && !json_datosGrales.getString("importe_total").isEmpty() ? "importe_total=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("fecha_inicio") && !json_datosGrales.getString("fecha_inicio").isEmpty() ? "fecha_inicio=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("fecha_fin") && !json_datosGrales.getString("fecha_fin").isEmpty() ? "fecha_fin=?," : "";
-                        query_upsert_proyecto += json_datosGrales.containsKey("id_usuario") && json_datosGrales.getInt("id_usuario") > 0 ? "id_usuario=?," : "";
-                        query_upsert_proyecto = query_upsert_proyecto.substring(0, query_upsert_proyecto.length() - 1);
-                        query_upsert_proyecto += " WHERE id_proyecto=" + (json_datosGrales.containsKey("id_proyecto") && json_datosGrales.getInt("id_proyecto") > 0 ? "?" : 0);
+//                        query_upsert_proyecto = "UPDATE Proyecto SET ";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("id_fondo") && json_datosGrales.getInt("id_fondo") > 0 ? "id_fondo=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("id_moneda") && json_datosGrales.getInt("id_moneda") > 0 ? "id_moneda=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("id_recurso") && json_datosGrales.getInt("id_recurso") > 0 ? "id_recurso=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("clave_proyecto") && !json_datosGrales.getString("clave_proyecto").isEmpty() ? "clave_proyecto=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("nombre_proyecto") && !json_datosGrales.getString("nombre_proyecto").isEmpty() ? "nombre_proyecto=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("id_cat_dependencia") && json_datosGrales.getInt("id_cat_dependencia") > 0 ? "id_cat_dependencia=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("id_cat_subdependencia") && json_datosGrales.getInt("id_cat_subdependencia") > 0 ? "id_cat_subdependencia=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("importe_total") && !json_datosGrales.getString("importe_total").isEmpty() ? "importe_total=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("fecha_inicio") && !json_datosGrales.getString("fecha_inicio").isEmpty() ? "fecha_inicio=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("fecha_fin") && !json_datosGrales.getString("fecha_fin").isEmpty() ? "fecha_fin=?," : "";
+//                        query_upsert_proyecto += json_datosGrales.containsKey("id_usuario") && json_datosGrales.getInt("id_usuario") > 0 ? "id_usuario=?," : "";
+//                        query_upsert_proyecto = query_upsert_proyecto.substring(0, query_upsert_proyecto.length() - 1);
+//                        query_upsert_proyecto += " WHERE id_proyecto=" + (json_datosGrales.containsKey("id_proyecto") && json_datosGrales.getInt("id_proyecto") > 0 ? "?" : 0);
                         // LOGGER.log(Level.WARNING, methodStr + ">: > query_upsert_proyecto." + query_upsert_proyecto);
                     } else {
                         // LOGGER.log(Level.INFO, methodStr + ">Existe proyecto: > FALSE.");
@@ -220,7 +222,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         if (json_datosGrales.containsKey("id_proyecto")) {
                             json_datosGrales.remove("id_proyecto");
                         }
-                        query_upsert_proyecto = "INSERT INTO " + conacyt_cfg.getString("proyectos")
+                        query_upsert_proyecto = "INSERT INTO " + conacyt_cfg.getString("proyecto")
                                 + "( " + conacyt_cfg.getString("campos_proyecto_ins") + " ) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
                         // LOGGER.log(Level.WARNING, methodStr + ">: > query_upsert_proyecto." + query_upsert_proyecto);
                         // LOGGER.log(Level.WARNING, methodStr + ">: > json_datosGrales." + json_datosGrales);
@@ -230,17 +232,21 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     if (respuesta_upsert > 0) {
                         result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "1").accumulate("mensaje", "Se inserto proyecto con éxito.");
                         LOGGER.log(Level.INFO, methodStr + ">Error: > Se inserto proyecto con éxito.");
+                        query_sel_documento = "SELECT * FROM " + conacyt_cfg.getString("v_proyectos")
+                                + " WHERE id_recurso = \'" + json_datosGrales.getInt("id_recurso") + "\' AND clave_proyecto = " + json_datosGrales.getString("clave_proyecto");
+                        id_proyecto = recordManager.executeQueryToID(query_sel_documento, conacyt_cfg.getString("column_id_proyecto"));
+
                         /**
                          * INSERT O UPDATE DE ETAPAS DEL PROYECTO.
                          */
-                        result_json = updsertEtapasProyectos(json);
+                        result_json = updsertEtapasProyectos(json, id_proyecto);
                         LOGGER.log(Level.INFO, methodStr + ">Error: > result_json." + result_json);
 
                         if (result_json.getInt("updsertEtapasProyecto") > 0) {
-                            result_json = updsertResponsablesProyectos(params);
+                            result_json = updsertResponsablesProyectos(params, id_proyecto);
                             LOGGER.log(Level.INFO, methodStr + ">Error: > result_json." + result_json);
                             if (result_json.getInt("updsertEtapasProyecto") > 0) {
-                                result_json = updsertDocumentoProyectos(params);
+                                result_json = updsertDocumentoProyectos(params, id_proyecto);
                                 LOGGER.log(Level.INFO, methodStr + ">Error: > result_json." + result_json);
                             }
                         }
@@ -270,7 +276,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         JSONArray respuesta = null;
         JSONObject result_json = null;
         try {
-            result_json = updsertEtapasProyectos(params);
+            result_json = updsertEtapasProyectos(params, 4);
         } catch (Exception e) {
             result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + e);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", e);
@@ -279,7 +285,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         return respuesta;
     }
 
-    private JSONObject updsertEtapasProyectos(JSONObject params) {
+    private JSONObject updsertEtapasProyectos(JSONObject params, int id_proyecto) {
         String methodStr = className + "::updsertEtapasProyecto";
         JSONObject result_json = null;
         String query_upsert_etapas_proyecto = null;
@@ -298,7 +304,14 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
 
                 for (int i = 0; i < etapas_size; i++) {
                     JSONObject etapa = (JSONObject) json_etapasP.get(i);
+                    JSONObject etapa_con_id = new JSONObject();
                     LOGGER.log(Level.FINER, methodStr + ">: > etapa." + etapa);
+                    //,,,,,,
+                    etapa_con_id.accumulate("id_etapa", etapa.getInt("id_etapa")).accumulate("id_recurso", etapa.getInt("id_recurso")).accumulate("id_proyecto", id_proyecto)
+                            .accumulate("id_ministracion", etapa.getInt("id_ministracion")).accumulate("id_cat_tipo_gasto", etapa.getInt("id_cat_tipo_gasto"))
+                            .accumulate("importe_asignado", etapa.getString("importe_asignado")).accumulate("importe_autorizado", etapa.getString("importe_autorizado")).accumulate("id_usuario", etapa.getInt("id_usuario"));
+                    LOGGER.log(Level.FINER, methodStr + ">: > etapa_con_id." + etapa_con_id);
+
                     respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_etapas_proyecto, etapa);
                     if (respuesta_upsert > 0) {
                         count++;
@@ -329,7 +342,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         JSONArray respuesta = null;
         JSONObject result_json = null;
         try {
-            result_json = updsertDocumentoProyectos(params);
+            result_json = updsertDocumentoProyectos(params, 4);
         } catch (Exception e) {
             result_json = new JSONObject().accumulate("updsertDocumentoProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + e);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", e);
@@ -338,11 +351,11 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         return respuesta;
     }
 
-    private JSONObject updsertDocumentoProyectos(JSONObject params) {
+    private JSONObject updsertDocumentoProyectos(JSONObject params, int id_proyecto) {
         String methodStr = className + "::updsertDocumentoProyectos";
         JSONObject result_json = null, params_exist = new JSONObject(), documento_proyecto = new JSONObject(), campos_documento_ins = new JSONObject();
         String query_sel_documento = null, query_upsert_documento = null, query_upsert_documentos_proyecto = null;
-        int respuesta_upsert = 0, count = 0, id_documento = 0;
+        int respuesta_upsert = 0, count = 0, id_documentos = 0;
         //LOGGER.log(Level.WARNING, methodStr + ">params.>"+params.containsKey("datosGenerales"));                
         try {
             if (params != null && !params.isEmpty() && !params.isNullObject() && !params.getString("documentos").isEmpty()) {
@@ -353,19 +366,24 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                 for (int i = 0; i < documentos_size; i++) {
                     JSONObject documento = (JSONObject) json_documentosP.get(i);
                     LOGGER.log(Level.FINER, methodStr + ">: > documento." + documento);
-                    documento_proyecto.accumulate("id_cat_documentos", documento.getInt("id_cat_documentos")).accumulate("id_proyecto", documento.getInt("id_proyecto")).accumulate("id_usuario", documento.getInt("id_usuario")).accumulate("id_comprobacion", documento.getInt("id_comprobacion"));
-                    query_upsert_documentos_proyecto = "INSERT INTO " + conacyt_cfg.getString("documentos_proyecto")
-                            + "(" + conacyt_cfg.getString("campos_documentos_proyecto_ins") + ") VALUES(?,?,?,?)";
-                    respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_documentos_proyecto, documento_proyecto);
+                    campos_documento_ins.accumulate("id_cat_cat_documentos", documento.getInt("id_cat_cat_documentos")).accumulate("nombre_archivo", documento.getString("nombre_archivo"))
+                            .accumulate("ruta", documento.getString("ruta")).accumulate("id_usuario", documento.getInt("id_usuario")).accumulate("id_proyecto", id_proyecto);
+                    LOGGER.log(Level.INFO, methodStr + ">: > campos_documento_ins." + campos_documento_ins);
+                    query_upsert_documento = "INSERT INTO " + conacyt_cfg.getString("documentos")
+                            + "(" + conacyt_cfg.getString("campos_documentos_ins") + ") VALUES(?,?,?,?,?)";
+                    LOGGER.log(Level.INFO, methodStr + ">: > query_upsert_documento." + query_upsert_documento);
+                    respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_documento, campos_documento_ins);
 
                     if (respuesta_upsert > 0) {
-                        query_sel_documento = "SELECT * FROM " + conacyt_cfg.getString("documentos_proyecto")
-                                + " WHERE id_cat_documentos = \'" + documento.getInt("id_cat_documentos") + "\' AND id_proyecto = " + documento.getInt("id_proyecto");
-                        id_documento = recordManager.executeQueryToID(query_sel_documento, conacyt_cfg.getString("column_id_documentos_proyecto"));
-                        campos_documento_ins.accumulate("id_documentos_proyecto", id_documento).accumulate("nombre_archivo", documento.getString("nombre_archivo")).accumulate("ruta", documento.getString("ruta")).accumulate("id_usuario", documento.getInt("id_usuario"));
-                        query_upsert_documento = "INSERT INTO " + conacyt_cfg.getString("documentos")
-                                + "(" + conacyt_cfg.getString("campos_documentos_ins") + ") VALUES(?,?,?,?)";
-                        respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_documento, campos_documento_ins);
+                        query_sel_documento = "SELECT * FROM " + conacyt_cfg.getString("documentos")
+                                + " WHERE estatus= \'Activo\' AND " + conacyt_cfg.getString("id_cat_cat_documentos") + "=" + documento.getInt("id_cat_cat_documentos") + " AND id_proyecto = " + id_proyecto;
+                        id_documentos = recordManager.executeQueryToID(query_sel_documento, conacyt_cfg.getString("column_id_documentos"));
+
+                        documento_proyecto.accumulate("id_documentos", id_documentos).accumulate("id_proyecto", id_proyecto).accumulate("id_usuario", documento.getInt("id_usuario"));
+                        query_upsert_documentos_proyecto = "INSERT INTO " + conacyt_cfg.getString("documentos_proyecto")
+                                + "(" + conacyt_cfg.getString("campos_documentos_proyecto_ins") + ") VALUES(?,?,?)";
+                        respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_documentos_proyecto, documento_proyecto);
+
                         if (respuesta_upsert > 0) {
                             result_json = new JSONObject().accumulate("updsertDocumentoProyectos", respuesta_upsert).accumulate("mensaje", "Se inserto relación de documentos con éxito.");
                             LOGGER.log(Level.INFO, methodStr + ">: > Se inserto documento con éxito.");
@@ -374,7 +392,6 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                             LOGGER.log(Level.INFO, methodStr + ">: > No se inserto el documento con éxito.");
                         }
                     }
-
                     count++;
                 }
                 LOGGER.log(Level.FINER, methodStr + ">: > documentos_size." + documentos_size + " count " + count);
@@ -402,7 +419,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         JSONArray respuesta = null;
         JSONObject result_json = null;
         try {
-            result_json = updsertResponsablesProyectos(params);
+            result_json = updsertResponsablesProyectos(params, 4);
         } catch (Exception e) {
             result_json = new JSONObject().accumulate("updsertResponsablesProyecto", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + e);
             LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", e);
@@ -411,7 +428,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
         return respuesta;
     }
 
-    private JSONObject updsertResponsablesProyectos(JSONObject params) {
+    private JSONObject updsertResponsablesProyectos(JSONObject params, int id_proyecto) {
         String methodStr = className + "::updsertResponsablesProyectos";
         JSONObject result_json = null, params_exist = new JSONObject(), responsable_proyecto = new JSONObject();
         String query_sel_responsable = null, query_upsert_responsable = null, query_upsert_responsables_proyecto = null, rfc = "SACV760201GK2";
@@ -432,7 +449,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         query_sel_responsable = "SELECT * FROM " + conacyt_cfg.getString("responsables")
                                 + " WHERE rfc = \'" + responsable.getString("rfc") + "\' AND id_cat_tipo_responsable = " + responsable.getInt("id_cat_tipo_responsable");
                         id_responsable = recordManager.executeQueryToID(query_sel_responsable, conacyt_cfg.getString("column_id_responsable"));
-                        responsable_proyecto.accumulate("id_proyecto", responsable.getInt("id_proyecto")).accumulate("id_responsable", id_responsable).accumulate("id_usuario", responsable.getInt("id_usuario"));
+                        responsable_proyecto.accumulate("id_proyecto", id_proyecto).accumulate("id_responsable", id_responsable).accumulate("id_usuario", responsable.getInt("id_usuario"));
                         query_upsert_responsables_proyecto = "INSERT INTO " + conacyt_cfg.getString("responsable_proyecto")
                                 + "(" + conacyt_cfg.getString("campos_responsables_proyecto_ins") + ") VALUES(?,?,?)";
                         respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_responsables_proyecto, responsable_proyecto);
@@ -454,7 +471,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                                     + " WHERE rfc = \'" + responsable.getString("rfc") + "\' AND id_cat_tipo_responsable = " + responsable.getInt("id_cat_tipo_responsable");
                             id_responsable = recordManager.executeQueryToID(query_sel_responsable, conacyt_cfg.getString("column_id_responsable"));
                             LOGGER.log(Level.INFO, methodStr + ">: > id_responsable." + id_responsable);
-                            responsable_proyecto.accumulate("id_proyecto", responsable.getInt("id_proyecto")).accumulate("id_responsable", id_responsable).accumulate("id_usuario", responsable.getInt("id_usuario"));
+                            responsable_proyecto.accumulate("id_proyecto", id_proyecto).accumulate("id_responsable", id_responsable).accumulate("id_usuario", responsable.getInt("id_usuario"));
                             query_upsert_responsables_proyecto = "INSERT INTO " + conacyt_cfg.getString("responsable_proyecto")
                                     + "(" + conacyt_cfg.getString("campos_responsables_proyecto_ins") + ") VALUES(?,?,?)";
                             respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_responsables_proyecto, responsable_proyecto);
@@ -522,8 +539,61 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
             result.add(result_json);
         }
         //LOGGER.log(Level.FINER, methodStr + "result: >" + result);
-       // result = JSONArray.fromObject(result_json);
+        // result = JSONArray.fromObject(result_json);
         return result;
+    }
+
+    private JSONArray updsertComprobacionesP(JSONObject params) {
+        String methodStr = className + "::updsertComprobacionesP";
+        JSONArray respuesta = null;
+        JSONObject result_json = null;
+        try {
+            result_json = updsertComprobaciones(params);
+        } catch (Exception e) {
+            result_json = new JSONObject().accumulate("updsertComprobacionesP", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + e);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", e);
+        }
+        respuesta = JSONArray.fromObject(result_json);
+        return respuesta;
+    }
+
+    private JSONObject updsertComprobaciones(JSONObject params) {
+        String methodStr = className + "::updsertComprobaciones";
+        JSONObject result_json = null,params_ins_comprobacion = new JSONObject();
+        String query_sel_comprobaciones = null, query_upsert_comprobacion = null,query_upsert_documentos = null;
+        int respuesta_upsert = 0, count = 0, id_proyecto = 0;
+        try {
+            if (params != null && !params.isEmpty() && !params.isNullObject()
+                    && params.containsKey("id_recurso") && params.getInt("id_recurso") > 0
+                    && params.containsKey("clave_proyecto") && !params.getString("clave_proyecto").isEmpty()) {
+                JSONObject json = JSONObject.fromObject(params);
+
+                query_sel_comprobaciones = "SELECT * FROM " + conacyt_cfg.getString("proyecto")
+                        + " WHERE clave_proyecto = \'" + json.getString("clave_proyecto") + "\' AND id_recurso = " + json.getInt("id_recurso");
+                id_proyecto = recordManager.executeQueryToID(query_sel_comprobaciones, conacyt_cfg.getString("column_id_proyecto"));
+                LOGGER.log(Level.WARNING, methodStr + ">id_proyecto.>" + id_proyecto);
+                //armamos los parametros para el insert de comprobaciones
+                query_upsert_comprobacion="INSERT INTO"+conacyt_cfg.getString("comprobacion")+"("+conacyt_cfg.getString("campos_comprobacion_ins")+") VALUES (?,?,?,?,?,?,?,?)";
+                params_ins_comprobacion.accumulate("id_proyecto", id_proyecto).accumulate("id_etapa_proyecto", json.getString("id_etapa_proyecto"))
+                        .accumulate("concepto", json.getString("concepto")).accumulate("importe", json.getString("importe")).accumulate("no_total_documentos", json.getString("no_total_documentos"))
+                        .accumulate("id_usuario", json.getInt("id_usuario")).accumulate("id_tipo_gasto", json.getInt("id_tipo_gasto"));
+                respuesta_upsert = recordManager.executeQueryUpsert(query_upsert_comprobacion, params_ins_comprobacion);
+                if(respuesta_upsert > 0){
+                    //TODO:ESTARA EN CONSTRUCCION
+                    //updsertDocumentoProyectos(params, id_proyecto);
+                } else {
+                    result_json = new JSONObject().accumulate("updsertComprobaciones", "-1").accumulate("mensaje", "Ocurrió un error al insertar la comprobación del proyecto.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Ocurrió un error al insertar la comprobación del proyecto.");
+                }
+            } else {
+                result_json = new JSONObject().accumulate("updsertComprobaciones", "-1").accumulate("mensaje", "El parámetro que contiene las etapas del proyecto esta vacío.");
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > El parámetro que contiene las etapas del proyecto esta vacío.");
+            }
+        } catch (Exception ex) {
+            result_json = new JSONObject().accumulate("updsertComprobaciones", "-1").accumulate("mensaje", "Excepción al ejecutar el método. " + ex);
+            LOGGER.log(Level.SEVERE, methodStr + "Error: >Excepción al ejecutar el método. ", ex);
+        }
+        return result_json;
     }
 
 }

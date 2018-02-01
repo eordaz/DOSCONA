@@ -144,11 +144,9 @@ json =
 json = {
             "documentos":[
                                 {
-                                    "id_cat_documentos":250,
-                                    "id_proyecto":4,
-                                    "nombre_archivo":'contrato211_01_2018.pdf',
+                                    "id_cat_cat_documentos":250,
+                                    "nombre_archivo":'contratoooooooo211_02_2018.pdf',
                                     "ruta":"/contratos/",
-                                    "id_comprobacion":1,
                                     "id_usuario":1
                                 }             
                           ]
