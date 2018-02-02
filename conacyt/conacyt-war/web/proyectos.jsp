@@ -99,7 +99,6 @@ json =
            {
 
              "datosGenerales":{
-                                "id_proyecto":4,
                                 "id_fondo":201,
                                 "id_moneda":192,
                                 "id_recurso":189,
@@ -115,8 +114,7 @@ json =
              "etapasProyecto":[
                                     {
                                      "id_etapa":1,
-                                     "id_recurso":189,                                                                                                                                        
-                                     "id_proyecto":4,
+                                     "id_recurso":189, 
                                      "id_ministracion":1,
                                      "id_cat_tipo_gasto":184,
                                      "importe_asignado":"12565.23",
@@ -125,8 +123,7 @@ json =
                                     },
                                     {
                                      "id_etapa":1,
-                                     "id_recurso":189,                                                                                                                                        
-                                     "id_proyecto":4,
+                                     "id_recurso":189, 
                                      "id_ministracion":4,
                                      "id_cat_tipo_gasto":186,
                                      "importe_asignado":"25368.56",
@@ -135,8 +132,7 @@ json =
                                     },
                                     {
                                      "id_etapa":2,
-                                     "id_recurso":189,                                                                                                                                        
-                                     "id_proyecto":4,
+                                     "id_recurso":189, 
                                      "id_ministracion":4,
                                      "id_cat_tipo_gasto":186,
                                      "importe_asignado":"204894.56",
@@ -145,8 +141,7 @@ json =
                                      },
                                     {
                                      "id_etapa":3,
-                                     "id_recurso":189,                                                                                                                                        
-                                     "id_proyecto":4,
+                                     "id_recurso":189,
                                      "id_ministracion":4,
                                      "id_cat_tipo_gasto":184,
                                      "importe_asignado":"453344.98",
@@ -156,7 +151,6 @@ json =
                               ],
              "responsables":[
                                 {
-                                    "id_proyecto":4,
                                     "id_cat_tipo_responsable":'207',
                                     "rfc":'SACV760201GK3',
                                     "nombre":'VALERIA',
@@ -168,7 +162,6 @@ json =
                                     "id_usuario":1
                                 },
                                 {
-                                    "id_proyecto":4,
                                     "id_cat_tipo_responsable":'208',
                                     "rfc":'SACV760201GK3',
                                     "nombre":'VALERIA',
@@ -180,7 +173,6 @@ json =
                                     "id_usuario":1
                                 },
                                 {
-                                    "id_proyecto":4,
                                     "id_cat_tipo_responsable":'209',
                                     "rfc":"OAGE810407",
                                     "nombre":"Edith",
@@ -195,7 +187,6 @@ json =
              "documentos":[
                                 {
                                     "id_cat_documentos":250,
-                                    "id_proyecto":4,
                                     "nombre_archivo":'contrato211_01_2018.pdf',
                                     "ruta":"/contratos/",
                                     "id_comprobacion":1,
