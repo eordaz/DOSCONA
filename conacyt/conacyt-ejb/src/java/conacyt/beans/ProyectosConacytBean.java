@@ -8,7 +8,6 @@ package conacyt.beans;
 import conacyt.db.RecordManager;
 import conacyt.utils.Utilerias;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,51 +103,40 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     query_doc = "SELECT * FROM " + conacyt_cfg.getString("documentos")
                             + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + " = " + id_proyecto;
                     LOGGER.log(Level.FINER, methodStr + ">query_doc: > " + query_doc);
-                    id_docs_proyecto = recordManager.executeQueryToID(query_doc, conacyt_cfg.getString("column_id_documentos"));
-                    LOGGER.log(Level.FINER, methodStr + ">id_docs_proyecto: > " + id_docs_proyecto);
+                    json_docs = recordManager.queryGetJSON(query_doc);
+                    LOGGER.log(Level.FINER, methodStr + ">json_docs: > " + json_docs);
 
-                    if (id_docs_proyecto != null && id_docs_proyecto > 0) {
-                        query_docs_proy = "SELECT * FROM " + conacyt_cfg.getString("documentos_proyecto")
-                                + " WHERE " + conacyt_cfg.getString("column_id_documentos") + "=" + id_docs_proyecto;
-                        json_docs = recordManager.queryGetJSON(query_docs_proy);
-                        LOGGER.log(Level.FINER, methodStr + ">json_docs: > " + json_docs);
-                        if (json_docs != null && !json_docs.isEmpty()) {
-                            json_tmp.put("documentos", (Object) json_docs);
-                            //result.add(json_tmp);
-                            query_etapas_proy = "SELECT * FROM " + conacyt_cfg.getString("v_etapas_proyecto")
+                    if (json_docs != null && !json_docs.isEmpty()) {
+                        json_tmp.put("documentos", (Object) json_docs);
+                        //result.add(json_tmp);
+                        query_etapas_proy = "SELECT * FROM " + conacyt_cfg.getString("v_etapas_proyecto")
+                                + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + "=" + result_json.getInt("id_proyecto");
+
+                        LOGGER.log(Level.FINER, methodStr + ">Error: > El query_etapas_proy ." + query_etapas_proy);
+                        json_etapas_proyecto = recordManager.queryGetJSONFromJSON(query_etapas_proy);
+
+                        if (json_etapas_proyecto != null && !json_etapas_proyecto.isEmpty()) {
+                            json_tmp.put("etapas_proyecto", (Object) json_etapas_proyecto);
+                            //LOGGER.log(Level.FINER, methodStr + ">Error: > El json_tmp ." + json_tmp);
+                            query_responsables_proy = "SELECT * FROM " + conacyt_cfg.getString("v_responsables_proyecto")
                                     + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + "=" + result_json.getInt("id_proyecto");
-
-                            LOGGER.log(Level.FINER, methodStr + ">Error: > El query_etapas_proy ." + query_etapas_proy);
-                            json_etapas_proyecto = recordManager.queryGetJSONFromJSON(query_etapas_proy);
-
-                            if (json_etapas_proyecto != null && !json_etapas_proyecto.isEmpty()) {
-                                json_tmp.put("etapas_proyecto", (Object) json_etapas_proyecto);
-                                //LOGGER.log(Level.FINER, methodStr + ">Error: > El json_tmp ." + json_tmp);
-                                query_responsables_proy = "SELECT * FROM " + conacyt_cfg.getString("v_responsables_proyecto")
-                                        + " WHERE " + conacyt_cfg.getString("column_id_proyecto") + "=" + result_json.getInt("id_proyecto");
-                                result_resp = recordManager.queryGetJSONFromJSON(query_responsables_proy);
-                                if (query_responsables_proy != null && !query_responsables_proy.isEmpty()) {
-                                    json_tmp.put("responsables", (Object) result_resp);
-                                    result.add(json_tmp);
-                                } else {
-                                    result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El proyecto solicitado no tiene responsables asociados.");
-                                    LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene responsables asociados.");
-                                    result.add(result_json);
-                                }
+                            result_resp = recordManager.queryGetJSONFromJSON(query_responsables_proy);
+                            if (query_responsables_proy != null && !query_responsables_proy.isEmpty()) {
+                                json_tmp.put("responsables", (Object) result_resp);
+                                result.add(json_tmp);
                             } else {
-                                result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El proyecto solicitado no tiene etapas asociadas.");
-                                LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene etapas asociadas.");
+                                result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El proyecto solicitado no tiene responsables asociados.");
+                                LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene responsables asociados.");
                                 result.add(result_json);
                             }
                         } else {
-                            result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El proyecto solicitado no tiene un documento asociado.");
-                            LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene un documento asociado.");
+                            result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El proyecto solicitado no tiene etapas asociadas.");
+                            LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene etapas asociadas.");
                             result.add(result_json);
                         }
-
                     } else {
-                        result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El identificador que esta solicitando no es válido.");
-                        LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto que esta solicitando no es válido.");
+                        result_json = new JSONObject().accumulate("obtenerProyectosPorClave", -1).accumulate("mensaje", "El proyecto solicitado no tiene un documento asociado.");
+                        LOGGER.log(Level.WARNING, methodStr + ">Error: > El proyecto solicitado no tiene un documento asociado.");
                         result.add(result_json);
                     }
                 } else {
