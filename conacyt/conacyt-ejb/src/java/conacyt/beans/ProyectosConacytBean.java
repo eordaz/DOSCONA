@@ -223,7 +223,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                         result_json = new JSONObject().accumulate("insertarOactualizarProyecto", "1").accumulate("mensaje", "Se inserto proyecto con éxito.");
                         LOGGER.log(Level.INFO, methodStr + ">Error: > Se inserto proyecto con éxito.");
                         query_sel_documento = "SELECT * FROM " + conacyt_cfg.getString("v_proyectos")
-                                + " WHERE id_recurso = \'" + json_datosGrales.getInt("id_recurso") + "\' AND clave_proyecto = " + json_datosGrales.getString("clave_proyecto");
+                                + " WHERE id_recurso = \'" + json_datosGrales.getInt("id_recurso") + "\' AND clave_proyecto = \'" + json_datosGrales.getString("clave_proyecto")+"\'";
                         id_proyecto = recordManager.executeQueryToID(query_sel_documento, conacyt_cfg.getString("column_id_proyecto"));
 
                         /**
@@ -514,7 +514,7 @@ public class ProyectosConacytBean implements ProyectosConacytBeanLocal {
                     && params.containsKey("id_recurso") && params.getInt("id_recurso") > 0
                     && params.containsKey("clave_proyecto") && !params.getString("clave_proyecto").isEmpty()) {
                 query_comprobaciones_proyecto = "SELECT * FROM " + conacyt_cfg.getString("v_anexos_comprobaciones")
-                        + " WHERE id_recurso = " + params.getInt("id_recurso") + " AND clave_proyecto = " + params.getString("clave_proyecto");
+                        + " WHERE id_recurso = " + params.getInt("id_recurso") + " AND clave_proyecto = \'" + params.getString("clave_proyecto")+"\'";
                 result = recordManager.queryGetJSONFromJSON(query_comprobaciones_proyecto);
                 LOGGER.log(Level.FINER, methodStr + ">result: > " + result);
                 //Se valida el resultado para entonces obtener el documento que se subio en el momento del registro del proyecto.
