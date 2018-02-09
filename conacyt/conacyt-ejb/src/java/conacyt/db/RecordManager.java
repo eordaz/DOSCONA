@@ -342,4 +342,46 @@ public class RecordManager {
         }
         return resultadoIIns;
     }
+    
+    public boolean existeRegistro(String tabla, String columna, JSONObject params) {
+        String methodStr = className + "::existeRegistro";
+        boolean result = false;
+        String query_usuario = null;
+        Integer id_usuario = 0;
+        try {
+            if (!params.isEmpty() && !tabla.trim().isEmpty()) {
+                //Se verifica si esiste el usuario
+                //query_usuario = "SELECT * FROM " + tabla + " WHERE estatus = \'Activo\' AND rfc = \'" + rfc + "\' AND clave_empleado = \'" + clave_empleado + "\'";
+                query_usuario = "SELECT * FROM " + tabla + " WHERE ";
+
+                for (Iterator iterator = params.keys(); iterator.hasNext();) {
+                    for (int i = 1; i <= params.size(); i++) {
+                        String next = (String) iterator.next();
+                        if (next.toString().startsWith("id_")) {
+                             LOGGER.log(Level.INFO, methodStr + ">pase pstmt .posición "+i+" value " + next);
+                            query_usuario +=  next + "=" + (int) params.get(next)+" AND " ;
+                        } else {
+                            LOGGER.log(Level.INFO, methodStr + ">pase pstmt entre lo demás.posición "+i+" campo "+ next+ " el valor "+ (String) params.get(next));
+                            query_usuario +=  next + "=\'" + (String) params.get(next)+"\' AND ";
+                        }
+                    }
+                }
+                LOGGER.log(Level.INFO, methodStr + ">: > El columna.> " + columna);
+                LOGGER.log(Level.INFO, methodStr + ">: > El query_.> " + query_usuario);
+                query_usuario = query_usuario.substring(0, query_usuario.length() - 4);
+                LOGGER.log(Level.INFO, methodStr + ">: > El query_.> " + query_usuario);
+                id_usuario = executeQueryToID(query_usuario, columna);
+                //LOGGER.log(Level.FINEST, methodStr + ">Error: > El id_usuario.> " + id_usuario);
+                if (id_usuario != null && id_usuario > 0) {
+                    result = true;
+                }
+            } else {
+                LOGGER.log(Level.WARNING, methodStr + ">Error: > Los parámetros que envía son nulos o vacíos.");
+            }
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + "> Error: >Excepción al ejecutar el método. ", ex);
+        }
+        return result;
+    }
 }

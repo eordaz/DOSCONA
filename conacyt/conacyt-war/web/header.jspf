@@ -15,7 +15,5 @@
   <a href="catalogos.jsp">Catálogos </a>
   <a href="proyectos.jsp">Proyectos </a>
   <a href="comprobaciones.jsp">Comprobaciones </a>
-  <a href="etapas.jsp">Etapas  </a>
-  <a href="responsables.jsp">Responsables </a>
   <a href="carga.jsp">Documentos </a>
 </div>

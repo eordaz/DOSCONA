@@ -6,14 +6,14 @@
 package conacyt.utils;
 
 import conacyt.db.RecordManager;
-import conacyt.entityObject.ProyectoEntidad;
-import conacyt.entityObject.UsuarioEntidad;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -41,6 +41,50 @@ public class Utilerias {
 
     }
 
+    public static String createFile(byte[] content, String filename) {
+        String methodStr = className + "::createFile";
+
+        String respuesta = null;
+        File file = null;
+        //byte[] content;
+
+        try {
+            //content = response.getOutputStream().toByteArray();
+            if (content != null && content.length != 0) {
+                LOGGER.log(Level.FINEST, ">Ejecutando..." + methodStr);
+                // directorio : Es la carpeta en donde se almacenará el archivo
+                File fileDir = new File(conacyt_cfg.getString("directorio"));
+                LOGGER.log(Level.FINE, methodStr + "> fileDir ..." + fileDir);
+                if (!fileDir.exists() && !fileDir.isDirectory()) {
+                    if (!fileDir.mkdirs()) {
+                        throw new Exception("Excepción al generar directorio para la descarga de archivos.");
+                    }
+                }
+                
+                file = new File(fileDir.getPath() + "/" + filename);
+                LOGGER.log(Level.FINE, methodStr + "> file ..." + file);
+                FileOutputStream foStream = new FileOutputStream(file);
+
+                byte[] buffer = new byte[1024];
+                int count = 0;
+                ByteArrayInputStream bis = new ByteArrayInputStream(content);
+                while ((count = bis.read(buffer)) != -1) {
+                    //Writes a byte to the byte array output stream.
+                    foStream.write(buffer, 0, count);
+                }
+
+                LOGGER.log(Level.FINE, methodStr + "> Stream write into the file ...");
+                respuesta = filename;
+
+                LOGGER.log(Level.INFO, methodStr + respuesta);
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, methodStr + ">Excepción al escribir el archivo", ex);
+            //respuesta = "error";
+        }
+        return respuesta;
+    }
+    
     public static void forEachByMap(HashMap map) {
         String methodStr = className + "::forEachByMap";
         try {

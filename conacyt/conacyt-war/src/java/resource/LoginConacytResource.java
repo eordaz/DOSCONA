@@ -30,11 +30,13 @@ import net.sf.json.JSONObject;
 @Path("conacyt/login/{method:.*}")
 public class LoginConacytResource {
 
+
     @Context
     private UriInfo context;
     LoginConacytBeanLocal loginConacytBean = null;
     private static String className = "LoginConacytResource";
     private static final Logger LOGGER = Logger.getLogger("LoginConacytResource");
+
 
     /**
      * Creates a new instance of LoginConacytResource
@@ -55,7 +57,7 @@ public class LoginConacytResource {
      * @param json JSON de parámetros: {"param1_":"value1","param_2":"value_2"}
      * @return JSONObject {"campo1":"value1","campo2":"value2"}
      */
-    @POST
+    @POST    
     @Produces(MediaType.APPLICATION_JSON)
     public JSONObject conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("") String json) {
         return loginConacytResource(method, json);
@@ -76,9 +78,7 @@ public class LoginConacytResource {
         // LOGGER.log(Level.WARNING, methodStr + ">params de tipo json "+json);
         try {
             if ((json != null && !json.isEmpty())
-                    && (method != null && !method.isEmpty())) {
-
-                //JSONRecord params = new JSONRecord(json);                
+                    && (method != null && !method.isEmpty())) {                
                 JSONObject params = JSONObject.fromObject(json);
                 result = loginConacytBean.processMethod(method, params);
             } else {
@@ -100,5 +100,6 @@ public class LoginConacytResource {
             throw new RuntimeException(ne);
         }
     }
+   
 
 }

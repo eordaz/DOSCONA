@@ -60,7 +60,7 @@ public class CatalogosConacytResources {
      */
     @GET
     @Produces("application/json")
-    public JSONArray conacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
+    public JSONArray catalogosConacytGet(@PathParam("method") @DefaultValue("") String method, @QueryParam("json") String json) {
         return catalogosConacytResource(method, json);
     }
 
@@ -72,7 +72,7 @@ public class CatalogosConacytResources {
      */
     @POST
     @Produces("application/json")
-    public JSONArray conacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
+    public JSONArray catalogosConacytPost(@PathParam("method") @DefaultValue("") String method, @FormParam("json") @DefaultValue("{}") String json) {
         return catalogosConacytResource(method, json);
     }
     
